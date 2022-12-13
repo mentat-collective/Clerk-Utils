@@ -1,4 +1,2 @@
-{:config-in-call
- {mentat.clerk-utils/cljs
-  {:linters {:unresolved-symbol {:level :off}
-             :unresolved-namespace {:level :off}}}}}
+{:config-paths
+ ["../resources/clj-kondo.exports/org.mentat/clerk-utils"]}
