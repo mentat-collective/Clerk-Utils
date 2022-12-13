@@ -21,7 +21,8 @@ Require `mentat.clerk-utils` in your namespace:
    (:require [mentat.clerk-utils :as mc]))
 ```
 
-;; TODO usage.
+TODO usage
+TODO who is using?
 
 ## Thanks and Support
 
