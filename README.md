@@ -23,6 +23,7 @@ Require `mentat.clerk-utils` in your namespace:
 
 TODO usage
 TODO who is using?
+TODO add a note to here and sicmutils about linting DEV dependencies
 
 ## Thanks and Support
 

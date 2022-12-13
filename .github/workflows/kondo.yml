@@ -22,9 +22,6 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Install clj-kondo
-        run: sudo ./bin/install-clj-kondo
-
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
@@ -43,5 +40,4 @@ jobs:
           restore-keys: ${{ runner.os }}-kondo
 
       - name: Run clj-kondo
-        run: |
-          clj-kondo --lint src:dev --config '{:output {:pattern "::{{level}} file={{filename}},line={{row}},col={{col}}::{{message}}"}}'
+        run: bb lint --config '{:output {:pattern "::{{level}} file={{filename}},line={{row}},col={{col}}::{{message}}"}}'

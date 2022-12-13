@@ -31,4 +31,5 @@
   (shell "clojure -T:build publish")
 
   lint
-  (shell "clj-kondo --lint src:dev")}}
+  (apply shell (into ["clj-kondo --lint src:dev"]
+                     *command-line-args*))}}
