@@ -16,7 +16,7 @@
 ;; [![Clojars Project](https://img.shields.io/clojars/v/org.mentat/clerk-utils.svg)](https://clojars.org/org.mentat/clerk-utils)
 ;;
 ;; > The interactive documentation on this page was generated from [this source
-;; > file](https://github.com/mentat-collective/clerk-utils/blob/$GIT_SHA/dev/jsxgraph/notebook.clj)
+;; > file](https://github.com/mentat-collective/clerk-utils/blob/$GIT_SHA/dev/clerk_utils/notebook.clj)
 ;; > using [Clerk](https://github.com/nextjournal/clerk). Follow
 ;; > the [instructions in the
 ;; > README](https://github.com/mentat-collective/clerk-utils/tree/main#interactive-documentation-via-clerk)
