@@ -1,0 +1,19 @@
+{:paths ["src"]
+ :deps {}
+
+ :aliases
+ {:nextjournal/clerk
+  {:extra-paths ["dev"]
+   :extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}
+                io.github.nextjournal/clerk {:mvn/version "0.12.707"}}
+   :exec-fn user/garden!}
+
+  :build
+  {:deps {io.github.clojure/tools.build {:git/tag "v0.8.2" :git/sha "ba1a2bf"}
+          slipset/deps-deploy {:mvn/version "0.2.0"}}
+   :ns-default build}
+
+  :lint
+  ;; Invoke with clj -M:dev:lint --lint src
+  {:main-opts ["-m" "clj-kondo.main"]
+   :replace-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}}}}
