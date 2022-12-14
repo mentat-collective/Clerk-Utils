@@ -3,13 +3,14 @@
  :no-cache true
  :visibility :hide-ns}
 (ns clerk-utils.notebook
-  (:require [mentat.clerk-utils :refer [cljs ->clerk]]
+  (:require [mentat.clerk-utils :as u]
             [nextjournal.clerk :as-alias clerk]))
 
 ;; # clerk-utils
 ;;
-;; TODO blurb.
-
+;; A small collection of functions and macros that have come in handy while
+;; documenting libraries with Nextjournal's [Clerk](https://clerk.vision/).
+;;
 ;; [![Build Status](https://github.com/mentat-collective/clerk-utils/actions/workflows/kondo.yml/badge.svg?branch=main)](https://github.com/mentat-collective/clerk-utils/actions/workflows/kondo.yml)
 ;; [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/mentat-collective/clerk-utils/blob/main/LICENSE)
 ;; [![cljdoc badge](https://cljdoc.org/badge/org.mentat/clerk-utils)](https://cljdoc.org/d/org.mentat/clerk-utils/CURRENT)
@@ -28,37 +29,112 @@
 ;; > page](https://cljdoc.org/d/org.mentat/clerk-utils/CURRENT/doc/readme) for
 ;; > detailed API documentation.
 
-;; ## ->clerk
+;; ## Quickstart
 ;;
-;; This will elide anything that is NOT
+;; Install `clerk-utils` into your Clojure project using the instructions at its
+;; Clojars page:
 
-(->clerk
- (clerk/tex "1+x"))
+;; [![Clojars
+;; Project](https://img.shields.io/clojars/v/org.mentat/clerk-utils.svg)](https://clojars.org/org.mentat/clerk-utils)
+;;
+;; Or grab the most recent code using a Git dependency:
+;;
+;; ```clj
+;; ;; deps
+;; {org.mentat/clerk-utils
+;;   {:git/sha "$GIT_SHA"}}
+;; ```
 
+;; Require `mentat.clerk-utils` in your namespace:
+
+;; ```clj
+;; (ns my-app
+;;   (:require [mentat.clerk-utils :as u]
+;;             [nextjournal.clerk :as-alias clerk]))
+;; ```
+
+;; ## Visibility Macros
 ;;
-;; ## `cljs` macro
+;; These macros allow you to include Clerk code in a library or project that may
+;; not have `nextjournal.clerk` available on the classpath.
 ;;
+;;
+;; ### ->clerk
+;;
+;; Wrapping a form in `->clerk` will cause the form to treated as a `comment` if
+;; `nextjournal.clerk` is not present on the classpath.
+
+(u/->clerk
+ (clerk/tex "1+x^2"))
+
+;; You might use this when documenting a piece of production code that you want
+;; to develop using Clerk, while excluding the Clerk dependency from the
+;; production artifact.
+;;
+;; If you're using Clojure 1.11 or above, use the `:as-alias` form of `require`
+;; to get nice prefixes for your Clerk functions that will still work if Clerk
+;; is not available;
+
+;; ```clj
+;; (require '[nextjournal.clerk :as-alias clerk])
+;; ```
+;;
+;; ### ->clerk-only
+;;
+;; Similar, but only evaluates its contents for Clerk. These forms will not be
+;; accessible from the REPL, and won't run in the REPL process (or when other
+;; namespaces require the namespace containing the form.)
+
+(u/->clerk-only
+ ;; some expensive visualization...
+ [1 2 3])
+
+;; ## cljs Macro
+
 ;; This will let you inject Reagent directly. You might want to do this when
 ;; crafting some UI-only code in Clerk.
 
-(cljs
- [:pre "Include any Reagent vector."])
+(u/cljs
+ (let [text "Include any Reagent vector!"]
+   [:pre text]))
 
-;; ### Other data structures
+;; Other data structures are presented with `[v/inspect ...]`:
 
-(cljs
+(u/cljs
  {:key "value"})
 
-(cljs
- #{1 2 3})
+;; Multiple forms are allowed. All are evaluated and only the final form is
+;; presented:
+
+(u/cljs
+ (defn exclaim [s]
+   (str s "!"))
+
+ [:pre (exclaim "Hi")])
+
+;; Any `defn` you include will be available to forms below:
+
+(u/cljs
+ [:pre (exclaim "Still here")])
+
+;; To present a vector as code, manually wrap it in `[v/inspect ...]`:
+
+(u/cljs
+ [v/inspect
+  [:pre (exclaim "Hi")]])
 
 ;; ### Client / Server Example
+;;
+;; Annotate a `var` definition bound to an atom with `^{::clerk/sync true}` to
+;; synchronize it between client and server.
 
-^{:nextjournal.clerk/sync true}
+^{::clerk/sync true}
 (defonce !state
   (atom 0))
 
-(cljs
+;; Now any updates to this atom on the client will show up in client code:
+
+(u/cljs
  (defn square [x]
    (* x x))
 
@@ -79,20 +155,56 @@
            "^2 = "
            (square @!state)))]]))
 
+;; These client-side changes will propagate to the server-side version of the
+;; atom, and will be available at the REPL:
+
 (clerk/md
  (str "The server-side value of $x="
       @!state
       "$ changes too."))
 
-;; multiple forms
+;; ## clj-kondo config
+
+;; `clerk-utils` ships with a configuration that allows
+;; [clj-kondo](https://github.com/clj-kondo/clj-kondo) to lint the library's
+;; macros.
+
+;; To install the exported linter configuration:
+
+;; 1. Install clj-kondo using [these
+;;    instructions](https://github.com/clj-kondo/clj-kondo/blob/master/doc/install.md).
+;;    I highly recommend configuring [editor
+;;    integration](https://github.com/clj-kondo/clj-kondo/blob/master/doc/editor-integration.md)
+;;    for your text editor.
+
+;; 2. If it doesn't exist yet, create a `.clj-kondo` folder in your project:
+
+;; ```sh
+;; mkdir .clj-kondo
+;; ```
+
+;; 3. Run `clj-kondo` using the following command. This will import the
+;; `clerk-utils` config and populate `clj-kondo`'s cache with linting
+;; information about all of your dependencies:
 ;;
-;; other data structures
+;; ```sh
+;; # If you're using Leiningen:
+;; clj-kondo --copy-configs --dependencies --lint$(lein classpath)"
+
+;; # If you're using deps.edn:
+;; clj-kondo --copy-configs --dependencies --lint "$(clojure -Spath)"
+;; ```
 ;;
-;; call inspect etc
-;;
-;; TODO publish the clj-kondo config too, note how to use it
-;;
-;; TODO note the `->clerk`.
+;; > The steps listed here mirror the [instructions in the clj-kondo
+;; repo](https://github.com/clj-kondo/clj-kondo/blob/master/doc/config.md#importing).
+
+;; ## Who is using clerk-utils?
+
+;; The following documentation notebooks include examples of the `cljs` macro:
+
+;; - [JSXGraph.cljs](https://jsxgraph.mentat.org)
+;; - [MathLive.cljs](https://mathlive.mentat.org)
+;; - [MathBox.cljs](https://mathbox.mentat.org)
 
 ;; ## Thanks and Support
 
