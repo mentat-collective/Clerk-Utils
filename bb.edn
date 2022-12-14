@@ -9,10 +9,10 @@
         (->> (spit file))))
 
   start-clerk
-  (shell "clojure -X:dev:nextjournal/clerk user/start!")
+  (shell "clojure -X:nextjournal/clerk user/start!")
 
   publish-gh-pages
-  (do (shell "clojure -X:dev:nextjournal/clerk user/github-pages!")
+  (do (shell "clojure -X:nextjournal/clerk user/github-pages!")
       (run 'sha)
       (spit "./public/CNAME" "clerk-utils.mentat.org"))
 
