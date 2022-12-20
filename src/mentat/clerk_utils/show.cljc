@@ -9,6 +9,9 @@
   #?(:cljs
      (:require-macros mentat.clerk-utils.show)))
 
+;; TODO this is going to need some behavior on the cljs side!! I think nothing,
+;; since that is already taken care of?
+
 (defmacro show-sci
   "Returns a form that executes all `exprs` in Clerk's SCI environment and renders
   the final form. If the final form evaluates to a vector, the vector is
@@ -53,6 +56,9 @@
 (def ^:no-doc stable-hash
   (comp hash stable-hash-form))
 
+;; TODO we can really win if we can figure out some way to call this code very
+;; naturally from SCI.
+
 (defmacro show-cljs
   "Evaluate expressions in ClojureScript instead of Clojure.
 
@@ -75,7 +81,9 @@
           '(fn render-var []
              ;; ensure that a reagent atom exists for this fn
              (applied-science.js-interop/update-in!
-              js/window [:clerk-cljs ~fn-name] (fn [x] (or x (reagent.core/atom {:loading? true}))))
+              js/window
+              [:clerk-cljs ~fn-name]
+              (fn [x] (or x (reagent.core/atom {:loading? true}))))
              (let [res @(j/get-in js/window [:clerk-cljs ~fn-name])]
                (if (:loading? res)
                  [:div.my-2 {:style {:color "rgba(0,0,0,0.5)"}} "Loading..."]
