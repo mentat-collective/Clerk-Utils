@@ -1,4 +1,4 @@
-{:paths ["src"]
+{:paths ["src" "resources"]
  :deps
  {applied-science/js-interop {:mvn/version "0.3.3"}}
 
