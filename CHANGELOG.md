@@ -2,6 +2,14 @@
 
 ## [unreleased]
 
+next PR:
+
+- move `cljs` to `show/show-sci`
+- `show-cljs` macro
+- new notebook showing it off
+- custom cljs build to this project... more details on that!!
+- TODO add docs, thank Matt, add docs on how to get shadow set up.
+
 ## 0.1.0
 
 - #3:

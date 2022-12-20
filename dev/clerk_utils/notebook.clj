@@ -4,6 +4,7 @@
  :visibility :hide-ns}
 (ns clerk-utils.notebook
   (:require [mentat.clerk-utils :as u]
+            [mentat.clerk-utils.show :refer [show-sci]]
             [nextjournal.clerk :as-alias clerk]))
 
 ;; # clerk-utils
@@ -89,24 +90,24 @@
  ;; some expensive visualization...
  [1 2 3])
 
-;; ## cljs Macro
+;; ## show-sci Macro
 
 ;; This will let you inject Reagent directly. You might want to do this when
 ;; crafting some UI-only code in Clerk.
 
-(u/cljs
+(show-sci
  (let [text "Include any Reagent vector!"]
    [:pre text]))
 
 ;; Other data structures are presented with `[v/inspect ...]`:
 
-(u/cljs
+(show-sci
  {:key "value"})
 
 ;; Multiple forms are allowed. All are evaluated and only the final form is
 ;; presented:
 
-(u/cljs
+(show-sci
  (defn exclaim [s]
    (str s "!"))
 
@@ -114,12 +115,12 @@
 
 ;; Any `defn` you include will be available to forms below:
 
-(u/cljs
+(show-sci
  [:pre (exclaim "Still here")])
 
 ;; To present a vector as code, manually wrap it in `[v/inspect ...]`:
 
-(u/cljs
+(show-sci
  [v/inspect
   [:pre (exclaim "Hi")]])
 
@@ -134,7 +135,7 @@
 
 ;; Now any updates to this atom on the client will show up in client code:
 
-(u/cljs
+(show-sci
  (defn square [x]
    (* x x))
 
