@@ -9,9 +9,6 @@
   #?(:cljs
      (:require-macros mentat.clerk-utils.show)))
 
-;; TODO this is going to need some behavior on the cljs side!! I think nothing,
-;; since that is already taken care of?
-
 (defmacro show-sci
   "Returns a form that executes all `exprs` in Clerk's SCI environment and renders
   the final form. If the final form evaluates to a vector, the vector is
@@ -20,15 +17,16 @@
   Else, the form is presented with `[v/inspect form]`. (To present a vector,
   manually wrap the final form in `[v/inspect ,,,]`.)"
   [& exprs]
-  `(clerk/with-viewer
-     {:transform-fn clerk/mark-presented
-      :render-fn '(fn [_#]
-                    (let [result# (do ~@exprs)]
-                      (v/html
-                       (if (vector? result#)
-                         result#
-                         [v/inspect result#]))))}
-     {}))
+  (when-not (:ns &env)
+    `(clerk/with-viewer
+       {:transform-fn clerk/mark-presented
+        :render-fn '(fn [_#]
+                      (let [result# (do ~@exprs)]
+                        (v/html
+                         (if (vector? result#)
+                           result#
+                           [v/inspect result#]))))}
+       {})))
 
 ;; ## Clerk ClojureScript/Reagent viewer
 ;;
