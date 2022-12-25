@@ -85,22 +85,43 @@
   otherwise passed to Clerk's `inspect`."
   ([] nil)
   ([& exprs]
-   (let [[defns others] ((juxt filter remove)
-                         #(when (seq? %)
-                            (= 'defn (first %)))
-                         exprs)
-         body (if (empty? others)
-                [(second (last defns))]
-                others)
-         fn-name (str *ns* "-" (mentat.clerk-utils.show/stable-hash others))]
-     (if (:ns &env)
-       ;; in ClojureScript, define a function
-       `(do ~@defns
-            (let [f# (fn [] ~@body)]
-              (j/update-in! ~'js/window [:clerk-cljs ~fn-name]
-                            (fn [x#]
-                              (cond (not x#) (reagent.core/atom {:f f#})
-                                    (:loading? @x#) (doto x# (reset! {:f f#}))
-                                    :else x#)))))
-       ;; in Clojure, return a map with a reference to the fully qualified sym
-       `(clerk/with-viewer loading-viewer ~fn-name)))))
+   (let [[defns others]
+         ((juxt filter remove)
+          #(when (seq? %)
+             (= 'defn (first %)))
+          exprs)]
+     (if (empty? others)
+       ;; This first branch contains only `defn` forms. Insert them into the
+       ;; cljs side and do nothing on the JVM.
+       (when (:ns &env)
+         `(do ~@defns))
+       ;; This branch handles side-effecting forms, and/or a final form we'd
+       ;; like to render using Reagent.
+       (let [fn-name (str *ns* "-" (mentat.clerk-utils.show/stable-hash others))]
+         (if (:ns &env)
+           `(do ~@defns
+                ;; On the Clojurescript side, splice in all `defn` forms, and
+                ;; generate a thunk that will run all side effects and return
+                ;; the final non-defn for Reagent.
+                (let [f# (fn [] ~@others)]
+                  ;; Attempt to store this function in the window.
+                  (j/update-in!
+                   ~'js/window [:clerk-cljs ~fn-name]
+                   (fn [x#]
+                     (cond
+                       ;; If this is the first insert, then cljs loaded before
+                       ;; Clerk's server. Insert the thunk wrapped in an atom.
+                       (not x#) (reagent.core/atom {:f f#})
+
+                       ;; This branch means the JVM got there first. Reset the
+                       ;; atom vs setting it up.
+                       (:loading? @x#) (doto x# (reset! {:f f#}))
+
+                       ;; Otherwise this is a no-op reload (since otherwise the
+                       ;; hash would have changed and we'd be hitting a
+                       ;; different slot in the window.)
+                       :else x#)))))
+           ;; On the Clojure side, activate `loading-viewer` above with the
+           ;; hash-generated symbol.
+           `(clerk/with-viewer loading-viewer
+              ~fn-name)))))))
