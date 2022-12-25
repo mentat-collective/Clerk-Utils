@@ -11,6 +11,10 @@
 (def index
   "dev/clerk_utils/notebook.clj")
 
+(def build-target
+  {:index index
+   :paths ["dev/clerk_utils/show.cljc"]})
+
 (def ^{:doc "static site defaults for local and github-pages modes."}
   defaults
   {:out-path   "public"
@@ -72,7 +76,7 @@
            "/js/viewer.js"
            (str cas-prefix "js/" cas))
     (clerk/build!
-     (merge {:index index}
+     (merge build-target
             (assoc opts :out-path out-path)))
     (replace-sha-template!
      (str out-path "/index.html"))))

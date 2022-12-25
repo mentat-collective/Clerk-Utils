@@ -9,4 +9,7 @@
 ;; # cljc demo.
 
 (show-cljs
- *clojurescript-version*)
+ [:div
+  [:pre "cake"]
+  [:pre "cake"]
+  [:pre "cake"]])
