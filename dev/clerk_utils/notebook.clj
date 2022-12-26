@@ -42,7 +42,7 @@
 ;;
 ;; ```clj
 ;; ;; deps
-;; {org.mentat/clerk-utils
+;; {io.github.mentat-collective/clerk-utils
 ;;   {:git/sha "$GIT_SHA"}}
 ;; ```
 
