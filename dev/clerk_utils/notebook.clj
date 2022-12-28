@@ -4,6 +4,7 @@
  :visibility :hide-ns}
 (ns clerk-utils.notebook
   (:require [mentat.clerk-utils :as u]
+            [mentat.clerk-utils.show :refer [show-sci]]
             [nextjournal.clerk :as-alias clerk]))
 
 ;; # clerk-utils
@@ -41,7 +42,7 @@
 ;;
 ;; ```clj
 ;; ;; deps
-;; {org.mentat/clerk-utils
+;; {io.github.mentat-collective/clerk-utils
 ;;   {:git/sha "$GIT_SHA"}}
 ;; ```
 
@@ -89,24 +90,44 @@
  ;; some expensive visualization...
  [1 2 3])
 
-;; ## cljs Macro
+;; ## `show-sci` Macro
 
-;; This will let you inject Reagent directly. You might want to do this when
-;; crafting some UI-only code in Clerk.
+;; `show-sci` lets you inject Reagent directly into Clerk's browser page. You
+;; might want to do this when crafting some UI-only code in Clerk.
+;;
+;; This function lives in `mentat.clerk-utils.show`:
 
-(u/cljs
+;; ```clj
+;; (require '[mentat.clerk-utils.show :refer [show-sci]])
+;; ```
+;;
+;; The name `show-sci` refers to the fact that Clerk's viewers are evaluated by
+;; SCI, the [Small Clojure Interpreter](https://github.com/borkdude/sci).
+;;
+;; > To compile forms using the full Clojurescript compiler,
+;; > see [`show-cljs`](#show-cljs-macro) below.
+;;
+;; Vectors are interpreted as Reagent components:
+
+(show-sci
  (let [text "Include any Reagent vector!"]
    [:pre text]))
 
 ;; Other data structures are presented with `[v/inspect ...]`:
 
-(u/cljs
+(show-sci
  {:key "value"})
+
+;; To present a vector as code, manually wrap it in `[v/inspect ...]`:
+
+(show-sci
+ [v/inspect
+  [:pre (exclaim "Hi")]])
 
 ;; Multiple forms are allowed. All are evaluated and only the final form is
 ;; presented:
 
-(u/cljs
+(show-sci
  (defn exclaim [s]
    (str s "!"))
 
@@ -114,14 +135,8 @@
 
 ;; Any `defn` you include will be available to forms below:
 
-(u/cljs
+(show-sci
  [:pre (exclaim "Still here")])
-
-;; To present a vector as code, manually wrap it in `[v/inspect ...]`:
-
-(u/cljs
- [v/inspect
-  [:pre (exclaim "Hi")]])
 
 ;; ### Client / Server Example
 ;;
@@ -134,10 +149,12 @@
 
 ;; Now any updates to this atom on the client will show up in client code:
 
-(u/cljs
+(show-sci
  (defn square [x]
    (* x x))
 
+ ;; Note that you must prepend the namespace onto the var annotated with
+ ;; `::clerk/sync`:
  (let [!state clerk-utils.notebook/!state]
    [:<>
     [:div
@@ -162,6 +179,23 @@
  (str "The server-side value of $x="
       @!state
       "$ changes too."))
+
+;; ## `show-cljs` Macro
+
+;; `show-cljs` is similar to `show-sci`, but allows you to compile its forms using the
+;; full Clojurescript compiler.
+
+;; `show-cljs` lives in `mentat.clerk-utils.show`:
+;;
+;; ```clj
+;; (require '[mentat.clerk-utils.show :refer [show-cljs]])
+;; ```
+;;
+;; This macro only works inside of a [`cljc`
+;; file](https://clojure.org/guides/reader_conditionals), which both the Clojure
+;; and ClojureScript compilers are able to read. This more complex use case is
+;; documented in the [`show-cljs` documentation
+;; notebook](dev/clerk_utils/show.html).
 
 ;; ## clj-kondo config
 

@@ -52,27 +52,3 @@
                   'nextjournal.clerk.config/*in-clerk*)
                  deref)
      `(do ~@body))))
-
-;; ## Example Macro
-
-(defmacro cljs
-  "Returns a form that executes all `exprs` in Clerk's SCI environment and renders
-  the final form. If the final form evaluates to a vector, the vector is
-  interpreted as a Reagent component.
-
-  Else, the form is presented with `[v/inspect form]`. (To present a vector,
-  manually wrap the final form in `[v/inspect ,,,]`.)
-
-  If `nextjournal.clerk` is not present on the classpath, acts as `comment`.
-  See [[->clerk]] for more detail."
-  [& exprs]
-  (->clerk
-   `(nextjournal.clerk/with-viewer
-      {:transform-fn nextjournal.clerk/mark-presented
-       :render-fn '(fn [_#]
-                     (let [result# (do ~@exprs)]
-                       (v/html
-                        (if (vector? result#)
-                          result#
-                          [v/inspect result#]))))}
-      {})))

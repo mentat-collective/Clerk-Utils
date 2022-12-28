@@ -1,19 +1,26 @@
-{:paths ["src"]
- :deps {}
+{:paths ["src" "resources"]
+ :deps
+ {applied-science/js-interop {:mvn/version "0.3.3"}}
 
  :aliases
- {:nextjournal/clerk
+ {:dev
+  {:extra-deps
+   {org.clojure/clojurescript {:mvn/version "1.11.60"}
+    ;; This needs to match the version declared in `package.json`.
+    thheller/shadow-cljs {:mvn/version "2.20.14"}}}
+
+  :nextjournal/clerk
   {:extra-paths ["dev"]
-   :extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}
-                io.github.nextjournal/clerk {:mvn/version "0.12.707"}}
+   :extra-deps
+   {io.github.nextjournal/clerk
+    {:git/sha "ec666210f11763fce4fec74072acca1e6525d29f"}
+    io.github.nextjournal/clerk.render
+    {:git/url "https://github.com/nextjournal/clerk"
+     :git/sha "ec666210f11763fce4fec74072acca1e6525d29f"
+     :deps/root "render"}}
    :exec-fn user/garden!}
 
   :build
   {:deps {io.github.clojure/tools.build {:git/tag "v0.8.2" :git/sha "ba1a2bf"}
           slipset/deps-deploy {:mvn/version "0.2.0"}}
-   :ns-default build}
-
-  :lint
-  ;; Invoke with clj -M:dev:lint --lint src
-  {:main-opts ["-m" "clj-kondo.main"]
-   :replace-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}}}}
+   :ns-default build}}}
