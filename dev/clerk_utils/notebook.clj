@@ -122,7 +122,8 @@
 
 (show-sci
  [v/inspect
-  [:pre (exclaim "Hi")]])
+  (let [text "Include any Reagent vector!"]
+    [:pre text])])
 
 ;; Multiple forms are allowed. All are evaluated and only the final form is
 ;; presented:
