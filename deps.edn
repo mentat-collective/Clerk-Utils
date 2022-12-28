@@ -5,7 +5,8 @@
  :aliases
  {:dev
   {:extra-deps
-   {org.clojure/clojurescript {:mvn/version "1.11.60"}
+   {org.clojure/clojure {:mvn/version "1.11.1"}
+    org.clojure/clojurescript {:mvn/version "1.11.60"}
     ;; This needs to match the version declared in `package.json`.
     thheller/shadow-cljs {:mvn/version "2.20.14"}}}
 

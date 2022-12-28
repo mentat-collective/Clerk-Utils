@@ -21,7 +21,7 @@ jobs:
         uses: DeLaGuardo/setup-clojure@4.0
         with:
           # Install just one or all simultaneously
-          cli: 1.10.3.1087 # Clojure CLI based on tools.deps
+          cli: 1.11.1.1208 # Clojure CLI based on tools.deps
           # (optional) To avoid rate limit errors please provide github token
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
