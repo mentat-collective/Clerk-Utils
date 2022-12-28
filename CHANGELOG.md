@@ -1,6 +1,6 @@
 # Changelog
 
-## [unreleased]
+## 0.2.0 [unreleased]
 
 - #6:
 
@@ -22,6 +22,8 @@
 
   - To support the above change, https://clerk-utils.mentat.org now builds its
     own custom JS bundle.
+
+  - Add missing clj-kondo config to the shipped jar.
 
 ## 0.1.0
 
