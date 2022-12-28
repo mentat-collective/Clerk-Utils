@@ -5,10 +5,6 @@
   {:target :esm
    :runtime :browser
    :output-dir "public/js"
-   :build-options
-   {:ns-aliases
-    {nextjournal.devcards nextjournal.devcards-noop}}
-
    :compiler-options
    {:infer-externs :auto
     :optimizations :advanced}

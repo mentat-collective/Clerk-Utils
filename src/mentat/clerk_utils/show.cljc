@@ -13,7 +13,10 @@
   interpreted as a Reagent component.
 
   Else, the form is presented with `[v/inspect form]`. (To present a vector,
-  manually wrap the final form in `[v/inspect ,,,]`.)"
+  manually wrap the final form in `[v/inspect ,,,]`.)
+
+  Works in both `clj` and `cljs` contexts; in `cljs` this is equivalent to
+  `clojure.core/comment`."
   [& exprs]
   (when-not (:ns &env)
     `(clerk/with-viewer
@@ -27,16 +30,16 @@
                 [nextjournal.clerk.render/inspect result#]))))}
        {})))
 
-;; ## Clerk ClojureScript/Reagent viewer
+;; ## show-cljs macro
 ;;
-;; (for using compiled ClojureScript in a notebook)
+;; For using compiled ClojureScript in a notebook.
 
 (defn- stable-hash-form
   "Replaces gensyms and regular expressions with stable symbols for consistent
   hashing."
   [form]
   (let [!counter (atom 0)
-        !syms (atom {})]
+        !syms    (atom {})]
     (walk/postwalk
      (fn [x]
        (cond #?(:cljs (regexp? x)
@@ -91,10 +94,28 @@
                  [nextjournal.clerk.render/inspect result])))))}))
 
 (defmacro show-cljs
-  "Evaluate expressions in ClojureScript instead of Clojure.
+  "CLJC macro that allows you to define forms in ClojureScript and make them
+  available to Clerk's browser in a single place.
 
-  Result is treated as hiccup if it is a vector (unless tagged with ^:inspect),
-  otherwise passed to Clerk's `inspect`."
+  Returns a form that executes all `exprs` and renders the final form.
+
+  If the final form evaluates to a vector, the vector is interpreted as a
+  Reagent component. (To present a vector, prepend the form with `^:inspect`
+  metadata.)
+
+  Else, the form is presented with `[v/inspect form]`.
+
+  ## How it Works
+
+  NOTE that this macro only makes sense when used inside of a cljc file, not in
+  clj or cljs independently!
+
+  When called from ClojureScript, emits all top-level `defn` forms and returns a
+  thunk that executes all non-`defn` forms when called. As a side effect, this
+  thunk is stored under `show_cljs.<hash-derived-name>` in `js/window`.
+
+  When called from Clojure, generates the same `<hash-derived-name>` from the
+  code forms and calls [[loading-viewer]] with this name."
   ([] nil)
   ([& exprs]
    (let [[defns others]
@@ -132,7 +153,8 @@
                        ;; Otherwise this is a no-op reload (since otherwise the
                        ;; hash would have changed and we'd be hitting a
                        ;; different slot in the window.)
-                       :else x#)))))
+                       :else x#)))
+                  f#))
            ;; On the Clojure side, activate `loading-viewer` above with the
            ;; hash-generated symbol.
            `(clerk/with-viewer loading-viewer

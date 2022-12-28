@@ -15,11 +15,12 @@ its Clojars page:
 
 [![Clojars Project](https://img.shields.io/clojars/v/org.mentat/clerk-utils.svg)](https://clojars.org/org.mentat/clerk-utils)
 
-Require `mentat.clerk-utils` in your namespace:
+Require `mentat.clerk-utils` and `mentat.clerk-utils.show` in your namespace:
 
 ```clj
 (ns my-app
    (:require [mentat.clerk-utils :as u]
+             [mentat.clerk-utils.show :as us]
              [nextjournal.clerk :as-alias clerk]))
 ```
 
@@ -33,11 +34,12 @@ Clerk is available, but will act as `comment` otherwise:
   [:pre (exclaim "I won't run if Clerk is missing")])
 ```
 
-`cljs` allows you to push Reagent forms directly into the client without
-building out a Clerk viewer:
+Another example: `us/show-sci` allows you to push Reagent forms directly into
+the client's [SCI environment](https://github.com/babashka/sci) without building
+out a Clerk viewer:
 
 ```
-(u/cljs
+(us/show-sci
  (let [text "Include any Reagent vector!"]
    [:pre text]))
 ```
@@ -49,11 +51,13 @@ notebook](https://clerk-utils.mentat.org) for more guides and examples.
 
 ## Who is using clerk-utils?
 
-The following documentation notebooks include examples of the `cljs` macro:
+The following documentation notebooks include examples of the `show-sci` macro:
 
 - [JSXGraph.cljs](https://jsxgraph.mentat.org)
 - [MathLive.cljs](https://mathlive.mentat.org)
 - [MathBox.cljs](https://mathbox.mentat.org)
+- [emmy-viewers](https://emmy-viewers.mentat.org)
+- [clerk-utils](https://clerk-utils.mentat.org)
 
 ## Interactive Documentation via Clerk
 
