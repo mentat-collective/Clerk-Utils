@@ -1,6 +1,4 @@
 {
-  "name": "clerk-utils",
-  "version": "0.1.0",
   "devDependencies": {
     "gh-pages": "^3.2.3",
     "http-server": "^14.1.1",

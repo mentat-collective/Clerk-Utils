@@ -2,6 +2,12 @@
 
 ## 0.2.0 [unreleased]
 
+- #8:
+
+  - fleshes out show.cljc notebook
+
+  - adds a guide for how to use Clerk with custom ClojureScript.
+
 - #6:
 
   - Moves the `cljs` macro to `mentat.clerk-utils.show/show-sci`, to make it
