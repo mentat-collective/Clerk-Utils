@@ -26,7 +26,9 @@
 
 (defn start!
   "Runs [[clerk/serve!]] with our custom JS. Run this after generating custom JS
-  with shadow in either production or `watch` mode."
+  with shadow in either production or `watch` mode.
+
+  Note that this port must match the port declared in `shadow-cljs.edn`."
   []
   (swap! config/!resource->url
          assoc

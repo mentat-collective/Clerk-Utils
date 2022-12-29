@@ -90,7 +90,7 @@
  ;; some expensive visualization...
  [1 2 3])
 
-;; ## `show-sci` Macro
+;; ## `show-sci` macro
 
 ;; `show-sci` lets you inject Reagent directly into Clerk's browser page. You
 ;; might want to do this when crafting some UI-only code in Clerk.
