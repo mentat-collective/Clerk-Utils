@@ -13,7 +13,7 @@
    :task
    (shell "clojure -X:dev:nextjournal/clerk user/start!")}
 
-  publish-gh-pages
+  build-static
   {:doc "Generate a fresh static build."
    :task
    (do (shell "npm ci")
@@ -31,14 +31,14 @@
   {:doc "Generate a fresh static build and release it to Github Pages."
    :task
    (do (shell "rm -rf public")
-       (run 'publish-gh-pages)
+       (run 'build-gh-pages)
        (shell "npm run gh-pages"))}
 
   publish-local
   {:doc "Generate a fresh static build in the `public` folder and start a local
   webserver."
    :task
-   (do (run 'publish-gh-pages)
+   (do (run 'build-static)
        (shell "npm run serve"))}
 
   release

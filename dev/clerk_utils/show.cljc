@@ -340,6 +340,7 @@
 ;; (def build-target
 ;;   ;; This is the argument to `clerk/build!`.
 ;;   {:index index
+;;    :git/url "https://github.com/$YOUR_ORG/$PROJECT_NAME"
 ;;    :paths ["dev/clerk_utils/show.cljc"]})
 
 ;; (def ^{:doc "static site defaults for local and github-pages modes."}
@@ -370,7 +371,14 @@
 ;;     :watch-paths ["dev"]})
 ;;   (Thread/sleep 500)
 ;;   (clerk/show! index))
-
+;;
+;; (defn git-sha
+;;   "Returns the sha hash of this project's current git revision."
+;;   []
+;;   (-> (sh "git" "rev-parse" "HEAD")
+;;       (:out)
+;;       (clojure.string/trim)))
+;;
 ;; (defn static-build!
 ;;   "This task is used to generate static sites for local use, github pages
 ;;   deployment and Clerk's Garden CDN.
@@ -389,6 +397,7 @@
 ;;   All `opts` are forwarded to [[nextjournal.clerk/build!]]."
 ;;   [opts]
 ;;   (let [{:keys [out-path cas-prefix]} (merge defaults opts)
+;;         sha (or (:git/sha opts) (git-sha))
 ;;         cas (cv/store+get-cas-url!
 ;;              {:out-path (str out-path "/js") :ext "js"}
 ;;              (fs/read-all-bytes "public/js/main.js"))]
@@ -397,7 +406,8 @@
 ;;            (str cas-prefix "js/" cas))
 ;;     (clerk/build!
 ;;      (merge build-target
-;;             (assoc opts :out-path out-path)))))
+;;             (assoc opts :out-path out-path
+;;                         :git/sha sha)))))
 
 ;; (defn garden!
 ;;   "Standalone executable function that runs [[static-build!]] configured for
@@ -440,7 +450,7 @@
 ;;    :task
 ;;    (shell "clojure -X:dev:nextjournal/clerk user/start!")}
 
-;;   publish-gh-pages
+;;   build-static
 ;;   {:doc "Generate a fresh static build."
 ;;    :task
 ;;    (do (shell "npm ci")
@@ -461,14 +471,14 @@
 ;;   {:doc "Generate a fresh static build and release it to Github Pages."
 ;;    :task
 ;;    (do (shell "rm -rf public")
-;;        (run 'publish-gh-pages)
+;;        (run 'build-static)
 ;;        (shell "npm run gh-pages"))}
 
 ;;   publish-local
 ;;   {:doc "Generate a fresh static build in the `public` folder and start a local
 ;;   webserver."
 ;;    :task
-;;    (do (run 'publish-gh-pages)
+;;    (do (run 'build-static)
 ;;        (shell "npm run serve"))}
 
 ;;   lint
@@ -515,7 +525,7 @@
 ;;           version: '0.8.156'
 ;;
 ;;       - name: Build static site
-;;         run: bb publish-gh-pages
+;;         run: bb build-static
 ;;
 ;;       - name: Deploy
 ;;         uses: peaceiris/actions-gh-pages@v3
