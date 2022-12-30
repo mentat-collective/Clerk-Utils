@@ -46,7 +46,7 @@
                   :resource-dirs ["resources"]})
     (doseq [f ["README.md" "LICENSE" "deps.edn"]]
       (b/copy-file {:src f :target (format "%s/%s" class-dir f)}))
-    (b/copy-dir {:src-dirs ["src"]
+    (b/copy-dir {:src-dirs ["src" "resources"]
                  :target-dir class-dir})
     (b/jar {:class-dir class-dir
             :jar-file jar-file})
