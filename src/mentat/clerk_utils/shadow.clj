@@ -13,6 +13,10 @@
   version
   (shadow.util/find-version))
 
+(def shadow-npm-dep
+  {:id "shadow-cljs"
+   :version version})
+
 (def build-id ::clerk)
 
 (def ^{:doc "Output directory for our controlled shadow-cljs build."}
@@ -55,9 +59,16 @@
   If you only do the second one, then nothing will happen if `package.json`
   includes all correct entries but no install has happened yet."
   []
-  (println "Running npm install...")
-  (println (sh "npm" "install"))
-  (npm-deps/main {} {}))
+  (let [package-json (npm-deps/read-package-json ".")
+        deps         (->> (npm-deps/get-deps-from-classpath)
+                          (npm-deps/resolve-conflicts)
+                          (remove #(npm-deps/is-installed? % package-json))
+                          (cons shadow-npm-dep))]
+    (when (seq package-json)
+      (println "Running npm install...")
+      (println (sh "npm" "install")))
+
+    (npm-deps/install-deps {} deps)))
 
 (defn stop-watch!
   "Shuts down the running server and stops the build watcher."

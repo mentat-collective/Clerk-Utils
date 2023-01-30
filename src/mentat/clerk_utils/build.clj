@@ -9,6 +9,8 @@
             [nextjournal.clerk.view]
             [nextjournal.clerk.viewer :as cv]))
 
+;; ## CSS Customization
+
 (def ^:no-doc custom-css
   (atom []))
 
@@ -25,17 +27,16 @@
         (map hiccup/include-css @custom-css)
         (apply old xs))))))
 
-(defn reset-css! []
-  (reset! custom-css []))
-
 (defn add-css! [& entries]
   (swap! custom-css into entries))
 
-;; TODO
+(defn set-css! [& entries]
+  (reset! custom-css (into [] entries)))
 
-;; - test the watcher, see if local file changes get picked up
-;; -
+(defn reset-css! []
+  (set-css! []))
 
+;;
 (defn git-sha
   "Returns the sha hash of this project's current git revision."
   []
@@ -53,16 +54,6 @@
 {'io.github.%s
   {:git/sha \"%s\"}}
   ```" slug (git-sha))))
-
-(defn replace-sha-template!
-  "Given some `path`, modifies the file at `path` replaces any occurence of the
-  string `$GIT_SHA` with the actual current sha of the repo."
-  ([path]
-   (replace-sha-template! path (git-sha)))
-  ([path sha]
-   (-> (slurp path)
-       (clojure.string/replace "$GIT_SHA" sha)
-       (->> (spit path)))))
 
 (def ^:private js-k "/js/viewer.js")
 
@@ -109,7 +100,6 @@
   (try (clerk/serve! opts)
        (finally
          (when (and browse? index)
-           (Thread/sleep 500)
            (clerk/show! index)))))
 
 (defn halt!
