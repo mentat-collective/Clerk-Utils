@@ -37,8 +37,6 @@
      :runtime :browser
      :modules {:main {:entries entries}}
      :output-dir output-dir
-     :build-options
-     {:ns-aliases '{nextjournal.devcards nextjournal.devcards-noop}}
      :compiler-options
      {:infer-externs :auto :optimizations :advanced}
      :js-options {:output-feature-set :es8}}))
