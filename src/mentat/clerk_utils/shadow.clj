@@ -59,9 +59,9 @@
   []
   (let [package-json (npm-deps/read-package-json ".")
         deps         (->> (npm-deps/get-deps-from-classpath)
+                          (cons shadow-npm-dep)
                           (npm-deps/resolve-conflicts)
-                          (remove #(npm-deps/is-installed? % package-json))
-                          (cons shadow-npm-dep))]
+                          (remove #(npm-deps/is-installed? % package-json)))]
     (when (seq package-json)
       (println "Running npm install...")
       (println (sh "npm" "install")))

@@ -127,7 +127,7 @@
     git sha.
 
   - `:out-path`: directory where Clerk will generate the HTML for its static
-    site. Defaults to \"public\".
+    site. Defaults to \"public/build\".
 
   - `:git/sha`, `:git/url`: add these for each generated Clerk page to include a
     reference back to the GitHub page of the file that generated it. `:git/sha`
@@ -145,8 +145,8 @@
   - Generates a static build into `(:out-path opts)`.
 
   All remaining `opts` are forwarded to [[nextjournal.clerk/build!]]."
-  [{:keys [cljs-namespaces out-path github-slug]
-    :or {out-path "public"
+  [{:keys [cljs-namespaces out-path github-slug cname]
+    :or {out-path "public/build"
          cljs-namespaces []}
     :as opts}]
   (let [sha       (or (:git/sha opts) (git-sha))
@@ -168,7 +168,12 @@
                           {:out-path out-path
                            :ext "js"}))]
         (with-viewer-js (str subfolder "/" cas)
-          (fn [] @!build))))))
+          (fn [] @!build))))
+    ;; This is necessary for folders with underscores to work on GitHub Pages,
+    ;; like the one that Clerk uses to store data for its CAS.
+    (spit (str out-path "/.nojekyll") "")
+    (when cname
+      (spit (str out-path "/CNAME") cname))))
 
 (defn garden!
   "Standalone executable function that runs [[static-build!]] configured for
