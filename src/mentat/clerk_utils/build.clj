@@ -36,7 +36,8 @@
 (defn reset-css! []
   (set-css! []))
 
-;;
+;; ## Utilities
+
 (defn git-sha
   "Returns the sha hash of this project's current git revision."
   []
@@ -74,24 +75,10 @@
          (finally
            (set-viewer-js! v)))))
 
-(defn slug->url [slug]
-  (str "https://github.com/" slug))
-
-(defn replace-sha [s sha]
-  (if (string? s)
-    (clojure.string/replace s "$GIT_SHA"  sha)
-    s))
-
-(defn get-subfolder [{:keys [github-slug garden? subfolder]} sha]
-  (-> (or subfolder
-          (when (and garden? github-slug)
-            (str github-slug "/commit/$GIT_SHA/")))
-      (replace-sha sha)))
-
 ;; API Clones
 
 (defn serve!
-  "Like `clerk/serve!` but handles custom cljs. If `browse?` and `show` are true,
+  "Like `clerk/serve!` but handles custom cljs. If `browse?` and `index` are true,
   shows the entry at `show!` once it opens."
   [{:keys [cljs-namespaces browse? index] :as opts}]
   (when (seq cljs-namespaces)
@@ -115,16 +102,7 @@
 
   Supports the following options:
 
-  - `:cljs-namespaces`: a list of namespaces to include. Defaults to `[]`.
-
-  - `:github-slug`: like `\"mentat-collective/clerk-utils\"`.
-
-  - `:garden?` If true, tunes the default `subfolder`.
-
-  - `:subfolder`: path after the top-level domain where the site will be hosted.
-    `https://mydomain.com/<subfolder>`, for example. Defaults to \"\". NOTE if you
-    include the string $GIT_SHA in the path, it will be replaced with the current
-    git sha.
+  - `:cljs-namespaces`: a sequence of namespaces to include. Defaults to `nil`.
 
   - `:out-path`: directory where Clerk will generate the HTML for its static
     site. Defaults to \"public/build\".
@@ -135,52 +113,38 @@
 
   Given these options, runs the following tasks:
 
-  - Triggers a shadow-cljs release build including all `cljs-namespaces`,
+  - Triggers a shadow-cljs release build including all `:cljs-namespaces`,
     downloading all required deps via npm. The output is stored
-    at `(str (:out-path opts) \"/_data\")`.
+    at `(str (:out-path opts) \"/_data/main.js\")`.
 
   - Configures Clerk to generate files that load the js from the generated name
-    above, located at (when deployed) `(str (:sub opts) \"/_data\")`
+    above, located at (when deployed) `\"/_data/main.js\"`
 
   - Generates a static build into `(:out-path opts)`.
 
   All remaining `opts` are forwarded to [[nextjournal.clerk/build!]]."
-  [{:keys [cljs-namespaces out-path github-slug cname]
-    :or {out-path "public/build"
-         cljs-namespaces []}
+  [{:keys [cljs-namespaces out-path cname]
+    :or {out-path "public/build"}
     :as opts}]
-  (let [sha       (or (:git/sha opts) (git-sha))
-        url       (or (:git/url opts)
-                      (when github-slug
-                        (slug->url github-slug)))
-        subfolder (get-subfolder opts sha)
-        !build    (delay
-                    (clerk/build!
-                     (assoc opts
-                            :out-path out-path
-                            :git/sha sha
-                            :git/url url)))]
-    (if-not (seq cljs-namespaces)
-      @!build
-      (let [js-path (shadow/release! cljs-namespaces)
-            cas     (->> (fs/read-all-bytes js-path)
-                         (cv/store+get-cas-url!
-                          {:out-path out-path
-                           :ext "js"}))]
-        (with-viewer-js (str subfolder "/" cas)
-          (fn [] @!build))))
-    ;; This is necessary for folders with underscores to work on GitHub Pages,
-    ;; like the one that Clerk uses to store data for its CAS.
-    (spit (str out-path "/.nojekyll") "")
-    (when cname
-      (spit (str out-path "/CNAME") cname))))
-
-(defn garden!
-  "Standalone executable function that runs [[static-build!]] configured for
-  Clerk's Garden."
-  [opts]
-  (assert (:github-slug opts) "`:github-slug` is required for a Garden build.")
-  (static-build!
-   (assoc opts
-          :garden? true
-          :subfolder nil)))
+  (let [sha    (or (:git/sha opts) (git-sha))
+        !build (delay
+                 (clerk/build!
+                  (assoc opts
+                         :git/sha sha
+                         :out-path out-path)))]
+    (try
+      (if-not (seq cljs-namespaces)
+        @!build
+        (let [js-path (shadow/release! cljs-namespaces)
+              cas     (->> (fs/read-all-bytes js-path)
+                           (cv/store+get-cas-url!
+                            {:out-path out-path
+                             :ext "js"}))]
+          ;; This is necessary for folders with underscores to work on GitHub Pages,
+          ;; like the one that Clerk uses to store data for its CAS.
+          (spit (str out-path "/.nojekyll") "")
+          (with-viewer-js cas
+            (fn [] @!build))))
+      (finally
+        (when cname
+          (spit (str out-path "/CNAME") cname))))))

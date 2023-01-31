@@ -64,7 +64,9 @@
                           (remove #(npm-deps/is-installed? % package-json)))]
     (when (seq package-json)
       (println "Running npm install...")
-      (println (sh "npm" "install")))
+      (println
+       (:out
+        (sh "npm" "install"))))
 
     (npm-deps/install-deps {} deps)))
 
