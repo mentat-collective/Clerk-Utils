@@ -1,13 +1,13 @@
 {:paths ["src" "resources"]
  :deps
- {applied-science/js-interop {:mvn/version "0.3.3"}}
+ {applied-science/js-interop {:mvn/version "0.3.3"}
+  thheller/shadow-cljs       {:mvn/version "2.20.14"}}
 
  :aliases
  {:dev
   {:extra-deps
    {org.clojure/clojure       {:mvn/version "1.11.1"}
-    org.clojure/clojurescript {:mvn/version "1.11.60"}
-    thheller/shadow-cljs      {:mvn/version "2.20.14"}}}
+    org.clojure/clojurescript {:mvn/version "1.11.60"}}}
 
   :nextjournal/clerk
   {:extra-paths ["dev"]
