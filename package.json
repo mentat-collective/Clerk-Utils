@@ -1,28 +1,24 @@
 {
   "devDependencies": {
     "gh-pages": "^3.2.3",
-    "http-server": "^14.1.1",
-    "shadow-cljs": "^2.20.14"
+    "http-server": "^14.1.1"
   },
-  "homepage": "https://clerk-utils.mentat.org",
   "scripts": {
-    "serve": "http-server -c-1 -o",
-    "gh-pages": "gh-pages -d public --dotfiles true",
-    "watch-clerk": "shadow-cljs watch clerk",
-    "release-clerk": "shadow-cljs release clerk"
+    "serve": "http-server public/build -c-1 -o",
+    "gh-pages": "gh-pages -d public/build --dotfiles true"
   },
   "dependencies": {
     "@codemirror/autocomplete": "6.4.0",
-    "@codemirror/commands": "6.1.2",
-    "@codemirror/language": "6.3.2",
+    "@codemirror/commands": "6.2.0",
+    "@codemirror/language": "6.4.0",
     "@codemirror/lint": "6.1.0",
     "@codemirror/search": "6.2.3",
-    "@codemirror/state": "6.1.4",
-    "@codemirror/view": "6.7.1",
+    "@codemirror/state": "6.2.0",
+    "@codemirror/view": "6.7.3",
     "@lezer/common": "1.0.2",
-    "@lezer/generator": "1.1.3",
+    "@lezer/generator": "1.2.2",
     "@lezer/highlight": "1.1.3",
-    "@lezer/lr": "1.2.5",
+    "@lezer/lr": "1.3.2",
     "@nextjournal/lang-clojure": "1.0.0",
     "d3-require": "1.3.0",
     "emoji-regex": "10.2.1",
@@ -37,6 +33,7 @@
     "punycode": "2.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "shadow-cljs": "2.20.14",
     "use-sync-external-store": "1.2.0",
     "vh-sticky-table-header": "1.2.1",
     "w3c-keyname": "2.2.4"

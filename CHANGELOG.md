@@ -4,9 +4,14 @@
 
 - #10:
 
-  - Adds css namespace
+  - Adds `mentat.clerk-utils.css` with `add-css!`, `set-css!` and `reset-css!`
+    functions for customizing the CSS served in Clerk's header
 
-  - `mentat.clerk-utils.build` with `serve!`, `halt!` and `build!`.
+  - Adds `mentat.clerk-utils.docs` with `git-sha` and `git-dependency` for
+    injecting git dependency instructions into a notebook
+
+  - Adds `mentat.clerk-utils.docs` with `serve!`, `build!` and `halt!`
+    variations that support custom CLJS compilation
 
 ## 0.2.0
 

@@ -4,6 +4,7 @@
  :visibility :hide-ns}
 (ns clerk-utils.notebook
   (:require [mentat.clerk-utils :as u]
+            [mentat.clerk-utils.docs :as docs]
             [mentat.clerk-utils.show :refer [show-sci]]
             [nextjournal.clerk :as clerk]))
 
@@ -17,8 +18,7 @@
 ;; [![cljdoc badge](https://cljdoc.org/badge/org.mentat/clerk-utils)](https://cljdoc.org/d/org.mentat/clerk-utils/CURRENT)
 ;; [![Clojars Project](https://img.shields.io/clojars/v/org.mentat/clerk-utils.svg)](https://clojars.org/org.mentat/clerk-utils)
 ;;
-;; > The interactive documentation on this page was generated from [this source
-;; > file](https://github.com/mentat-collective/clerk-utils/blob/$GIT_SHA/dev/clerk_utils/notebook.clj)
+;; > The interactive documentation on this page was generated
 ;; > using [Clerk](https://github.com/nextjournal/clerk). Follow
 ;; > the [instructions in the
 ;; > README](https://github.com/mentat-collective/clerk-utils/tree/main#interactive-documentation-via-clerk)
@@ -39,12 +39,10 @@
 ;; Project](https://img.shields.io/clojars/v/org.mentat/clerk-utils.svg)](https://clojars.org/org.mentat/clerk-utils)
 ;;
 ;; Or grab the most recent code using a Git dependency:
-;;
-;; ```clj
-;; ;; deps
-;; {io.github.mentat-collective/clerk-utils
-;;   {:git/sha "$GIT_SHA"}}
-;; ```
+
+^{:nextjournal.clerk/visibility {:code :hide}}
+(docs/git-dependency
+ "mentat-collective/clerk-utils")
 
 ;; Require `mentat.clerk-utils` in your namespace:
 

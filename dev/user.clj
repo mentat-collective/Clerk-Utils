@@ -1,106 +1,41 @@
 (ns user
-  (:require [babashka.fs :as fs]
-            [clojure.java.shell :refer [sh]]
-            [clojure.string]
-            [nextjournal.clerk :as clerk]
-            [nextjournal.clerk.config :as config]
-            [nextjournal.clerk.view]
-            [nextjournal.clerk.viewer :as cv]
-            [shadow.cljs.devtools.api :as shadow]))
+  (:require [mentat.clerk-utils.build :as b]))
 
 (def index
   "dev/clerk_utils/notebook.clj")
 
-(def build-target
+(def defaults
   {:index index
-   :git/url "https://github.com/mentat-collective/clerk-utils"
-   :paths ["dev/clerk_utils/show.cljc"]})
+   :browse? true
+   :watch-paths ["dev"]
+   :cljs-namespaces '[clerk-utils.show]})
 
-(def ^{:doc "static site defaults for local and github-pages modes."}
-  defaults
-  {:out-path   "public"
-   :cas-prefix "/"})
+(def static-defaults
+  (assoc defaults
+         :browse? false
+         :paths ["dev/clerk_utils/show.cljc"]
+         :cname "clerk-utils.mentat.org"
+         :git/url "https://github.com/mentat-collective/clerk-utils"))
 
-(def ^{:doc "static site defaults for Clerk's Garden CDN."}
-  garden-defaults
-  {:cas-prefix "/mentat-collective/clerk-utils/commit/$GIT_SHA/"})
+(defn serve!
+  "Alias of [[mentat.clerk-utils.build/serve!]] with [[defaults]] supplied as
+  default arguments.
 
-(defn start!
-  "Runs [[clerk/serve!]] with our custom JS. Run this after generating custom JS
-  with shadow in either production or `watch` mode.
+  Any supplied `opts` overrides the defaults."
+  ([] (serve! {}))
+  ([opts]
+   (b/serve!
+    (merge defaults opts))))
 
-  Note that this port must match the port declared in `shadow-cljs.edn`."
-  []
-  (swap! config/!resource->url
-         assoc
-         "/js/viewer.js" "http://localhost:8765/js/main.js")
-  (clerk/serve!
-   {:browse? true
-    :watch-paths ["dev"]})
-  (Thread/sleep 500)
-  (clerk/show! index))
+(def ^{:doc "Alias for [[mentat.clerk-utils.build/halt!]]."}
+  halt!
+  b/halt!)
 
-(defn git-sha
-  "Returns the sha hash of this project's current git revision."
-  []
-  (-> (sh "git" "rev-parse" "HEAD")
-      (:out)
-      (clojure.string/trim)))
+(defn build!
+  "Alias of [[mentat.clerk-utils.build/build!]] with [[static-defaults]] supplied as
+  default arguments.
 
-(defn replace-sha-template!
-  "Given some `path`, modifies the file at `path` replaces any occurence of the
-  string `$GIT_SHA` with the actual current sha of the repo."
-  ([path]
-   (replace-sha-template! path (git-sha)))
-  ([path sha]
-   (-> (slurp path)
-       (clojure.string/replace "$GIT_SHA" sha)
-       (->> (spit path)))))
-
-(defn static-build!
-  "This task is used to generate static sites for local use, github pages
-  deployment and Clerk's Garden CDN.
-
-  Accepts a map of options `opts` and runs the following tasks:
-
-  - Slurps the output of the shadow-cljs `:clerk` build from `public/js/main.js`
-    and pushes it into a CAS located at `(str (:out-path opts) \"/js/_data\")`.
-
-  - Configures Clerk to generate files that load the js from the generated name
-    above, stored in `(str (:cas-prefix opts) \"/js/_data\")`
-
-  - Creates a static build of the single namespace [[index]] at `(str (:out-path
-    opts) \"/index.html\")`
-
-  - Replaces all instances of the string $GIT_SHA in `index.html` with the
-    actual sha of the library.
-
-  All `opts` are forwarded to [[nextjournal.clerk/build!]]."
+  Any supplied `opts` overrides the defaults."
   [opts]
-  (let [{:keys [out-path cas-prefix]} (merge defaults opts)
-        sha (or (:git/sha opts) (git-sha))
-        cas (cv/store+get-cas-url!
-             {:out-path (str out-path "/js") :ext "js"}
-             (fs/read-all-bytes "public/js/main.js"))]
-    (swap! config/!resource->url assoc
-           "/js/viewer.js"
-           (str cas-prefix "js/" cas))
-    (clerk/build!
-     (merge build-target
-            (assoc opts :out-path out-path
-                   :git/sha sha)))
-    (replace-sha-template!
-     (str out-path "/index.html")
-     sha)))
-
-(defn garden!
-  "Standalone executable function that runs [[static-build!]] configured for
-  Clerk's Garden. See [[garden-defaults]] for customizations
-  to [[static-build!]]."
-  [opts]
-  (println "Running npm install...")
-  (println
-   (sh "npm" "install"))
-  (shadow/release! :clerk)
-  (static-build!
-   (merge garden-defaults opts)))
+  (b/build!
+   (merge static-defaults opts)))

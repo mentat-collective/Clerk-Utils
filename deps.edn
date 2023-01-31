@@ -5,21 +5,20 @@
  :aliases
  {:dev
   {:extra-deps
-   {org.clojure/clojure {:mvn/version "1.11.1"}
+   {org.clojure/clojure       {:mvn/version "1.11.1"}
     org.clojure/clojurescript {:mvn/version "1.11.60"}
-    ;; This needs to match the version declared in `package.json`.
-    thheller/shadow-cljs {:mvn/version "2.20.14"}}}
+    thheller/shadow-cljs      {:mvn/version "2.20.14"}}}
 
   :nextjournal/clerk
   {:extra-paths ["dev"]
    :extra-deps
    {io.github.nextjournal/clerk
-    {:git/sha "ec666210f11763fce4fec74072acca1e6525d29f"}
+    {:git/sha "4180ed31c2864687a770f6d4f625303bd8e75437"}
     io.github.nextjournal/clerk.render
     {:git/url "https://github.com/nextjournal/clerk"
-     :git/sha "ec666210f11763fce4fec74072acca1e6525d29f"
+     :git/sha "4180ed31c2864687a770f6d4f625303bd8e75437"
      :deps/root "render"}}
-   :exec-fn user/garden!}
+   :exec-fn user/build!}
 
   :build
   {:deps {io.github.clojure/tools.build {:git/tag "v0.8.2" :git/sha "ba1a2bf"}

@@ -24,6 +24,6 @@
     (format
      "```clj
 
-{'io.github.%s
+{io.github.%s
   {:git/sha \"%s\"}}
   ```" slug sha))))
