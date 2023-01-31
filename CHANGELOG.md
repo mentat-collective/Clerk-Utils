@@ -2,6 +2,12 @@
 
 ## [unreleased]
 
+- #10:
+
+  - Adds css namespace
+
+  - `mentat.clerk-utils.build` with `serve!`, `halt!` and `build!`.
+
 ## 0.2.0
 
 - #8:

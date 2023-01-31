@@ -5,7 +5,7 @@
 (ns clerk-utils.notebook
   (:require [mentat.clerk-utils :as u]
             [mentat.clerk-utils.show :refer [show-sci]]
-            [nextjournal.clerk :as-alias clerk]))
+            [nextjournal.clerk :as clerk]))
 
 ;; # clerk-utils
 ;;

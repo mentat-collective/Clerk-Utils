@@ -1,128 +1,109 @@
 (ns mentat.clerk-utils.build
+  "Versions of `nextjournal.clerk/{build!,serve!,halt!} that support custom CLJS
+  compilation.`"
   (:require [babashka.fs :as fs]
-            [clojure.java.shell :refer [sh]]
-            [clojure.string]
-            [hiccup.page :as hiccup]
-            [mentat.clerk-utils.shadow :as shadow]
+            [mentat.clerk-utils.docs :refer [git-sha]]
+            [mentat.clerk-utils.build.shadow :as shadow]
             [nextjournal.clerk :as clerk]
             [nextjournal.clerk.config :as config]
             [nextjournal.clerk.view]
             [nextjournal.clerk.viewer :as cv]))
 
-;; ## CSS Customization
-
-(def ^:no-doc custom-css
-  (atom []))
-
-(defn- rebind [^clojure.lang.Var v f]
-  (let [old (.getRawRoot v)]
-    (.bindRoot v (f old))))
-
-(defonce _ignore
-  (rebind
-   #'nextjournal.clerk.view/include-viewer-css
-   (fn [old]
-     (fn [& xs]
-       (concat
-        (map hiccup/include-css @custom-css)
-        (apply old xs))))))
-
-(defn add-css! [& entries]
-  (swap! custom-css into entries))
-
-(defn set-css! [& entries]
-  (reset! custom-css (into [] entries)))
-
-(defn reset-css! []
-  (set-css! []))
-
-;; ## Utilities
-
-(defn git-sha
-  "Returns the sha hash of this project's current git revision."
-  []
-  (-> (sh "git" "rev-parse" "HEAD")
-      (:out)
-      (clojure.string/trim)))
-
-(defn git-dependency
-  "Nice for display!"
-  [slug]
-  (clerk/md
-   (format
-    "```clj
-
-{'io.github.%s
-  {:git/sha \"%s\"}}
-  ```" slug (git-sha))))
+;; ## Viewer JS Utilities
 
 (def ^:private js-k "/js/viewer.js")
 
-(defn viewer-js []
+(defn ^:no-doc viewer-js
+  "Returns Clerk's currently assigned viewer JS path."
+  []
   (@config/!resource->url js-k))
 
-(defn set-viewer-js! [path]
+(defn ^:no-doc set-viewer-js!
+  "Sets Clerk's viewer JS path to `path`."
+  [path]
   (swap! config/!resource->url assoc js-k path))
 
-(defn reset-viewer-js! []
+(defn ^:no-doc reset-viewer-js!
+  "Resets Clerk's viewer JS path to its default."
+  []
   (let [default (@config/!asset-map js-k)]
     (swap! config/!resource->url assoc js-k default)))
 
-(defn with-viewer-js [path f]
+(defn ^:no-doc with-viewer-js
+  "Executes the thunk `f` with Clerk's viewer JS viewer set to `path`, and returns
+  the value of `(f)`. After execution, returns Clerk's viewer JS to its initial
+  value.
+
+  NOTE that this is NOT thread safe, as the viewer is not dynamically bound!
+  Please don't try to launch multiple asynchronous calls to [[with-viewer-js]]."
+  [path f]
   (let [v (viewer-js)]
     (try (set-viewer-js! path)
          (f)
          (finally
            (set-viewer-js! v)))))
 
-;; API Clones
+;; ## Custom CLJS
 
 (defn serve!
-  "Like `clerk/serve!` but handles custom cljs. If `browse?` and `index` are true,
-  shows the entry at `show!` once it opens."
+  "Version of [[nextjournal.clerk/serve!]] that supports custom CLJS compilation
+  via `shadow-cljs`.
+
+  In addition to all options supported by Clerk's `serve!`, [[serve!]] supports
+  the following options:
+
+  - `:cljs-namespaces`: a sequence of CLJS namespaces to compile and make
+    available to Clerk. If provided, [[serve!]] will compile a custom CLJS bundle
+    and configure Clerk to use this bundle instead of its default.
+
+  - `:shadow-options`: these options are forwarded
+    to [[mentat.clerk-utils.build.shadow/watch!]]. See that function's docs for
+    more detail.
+
+    This bundle is served from a running shadow-cljs server and recompiled when
+    any dependency or namespace changes. Defaults to `nil`.
+
+  The only other difference is that if `(:browse? opts)` is `true`, [[serve!]]
+  calls [[nextjournal.clerk/show!]] automatically on `(:index opts)` if
+  provided.
+
+  All remaining `opts` are forwarded to [[nextjournal.clerk/serve!]]"
   [{:keys [cljs-namespaces browse? index] :as opts}]
   (when (seq cljs-namespaces)
-    (let [{:keys [js-path]} (shadow/watch! cljs-namespaces)]
-      (set-viewer-js! js-path)))
+    (let [{:keys [js-url]} (shadow/watch! cljs-namespaces)]
+      (set-viewer-js! js-url)))
   (try (clerk/serve! opts)
        (finally
          (when (and browse? index)
            (clerk/show! index)))))
 
 (defn halt!
-  "like `clerk/halt!` but stops the shadow watcher if it's running."
+  "Version of [[nextjournal.clerk/halt!]] that additionally kills any shadow-cljs
+  processes, if they are running."
   []
   (shadow/stop-watch!)
   (reset-viewer-js!)
   (clerk/halt!))
 
-(defn static-build!
-  "This task is used to generate static sites for local use, GitHub pages
-  deployment and Clerk's Garden CDN.
+(defn build!
+  "Version of [[nextjournal.clerk/build!]] that supports custom CLJS compilation.
 
-  Supports the following options:
+  In addition to all options supported by Clerk's `build!`, [[build!]] supports
+  the following options:
 
-  - `:cljs-namespaces`: a sequence of namespaces to include. Defaults to `nil`.
+  - `:cljs-namespaces`: a sequence of CLJS namespaces to compile and make
+    available to Clerk. If provided, [[build!]] will compile a custom CLJS bundle
+    and configure Clerk to use this bundle instead of its default. Defaults to
+    `nil`.
 
-  - `:out-path`: directory where Clerk will generate the HTML for its static
-    site. Defaults to \"public/build\".
+  - `:cname`: string denoting the custom hostname from which the site will be
+    served. If provided, [[build!]] will create a `CNAME` file containing the
+    value in `(:out-path opts)`. Defaults to `nil`.
 
-  - `:git/sha`, `:git/url`: add these for each generated Clerk page to include a
-    reference back to the GitHub page of the file that generated it. `:git/sha`
-    defaults to `([[git-sha]])`.
+  The only other difference is that [[build!]] populates `:git/sha` if it hasn't
+  been provided.
 
-  Given these options, runs the following tasks:
-
-  - Triggers a shadow-cljs release build including all `:cljs-namespaces`,
-    downloading all required deps via npm. The output is stored
-    at `(str (:out-path opts) \"/_data/main.js\")`.
-
-  - Configures Clerk to generate files that load the js from the generated name
-    above, located at (when deployed) `\"/_data/main.js\"`
-
-  - Generates a static build into `(:out-path opts)`.
-
-  All remaining `opts` are forwarded to [[nextjournal.clerk/build!]]."
+  All remaining `opts` are forwarded to [[nextjournal.clerk/build!]]"
   [{:keys [cljs-namespaces out-path cname]
     :or {out-path "public/build"}
     :as opts}]
