@@ -1,37 +1,30 @@
-{:pods {clj-kondo/clj-kondo {:version "2022.12.10"}}
+{:pods {clj-kondo/clj-kondo {:version "2023.01.20"}}
  :tasks
  {:requires ([pod.borkdude.clj-kondo :as clj-kondo])
+  :init
+  (defn X [cmd]
+    (let [args *command-line-args*]
+      (if (even? (count args))
+        (apply shell cmd args)
+        (do (println "Please supply an even number of arguments!")
+            (System/exit 1)))))
 
-  dev-notebook
+  clerk-watch
   {:doc "Start a shadow-cljs watch process that generates this project's custom JS."
-   :task
-   (do (shell "npm install")
-       (shell "npm run watch-clerk"))}
-
-  start-clerk
-  {:doc "Start a Clerk dev server configured with this project's custom JS."
-   :task
-   (shell "clojure -X:dev:nextjournal/clerk user/start!")}
+   :task (X "clojure -X:nextjournal/clerk user/start!")}
 
   build-static
   {:doc "Generate a fresh static build."
    :task
-   (do (shell "npm ci")
-       (shell "npm run release-clerk")
-       (apply shell
-              "clojure -X:dev:nextjournal/clerk user/static-build!"
-              *command-line-args*)
-       (spit "./public/CNAME" "clerk-utils.mentat.org")
-
-       ;; This is necessary for folders with underscores to work, like the one
-       ;; that Clerk uses to store data for its CAS.
-       (spit "./public/.nojekyll" ""))}
+   (apply shell
+          "clojure -X:nextjournal/clerk"
+          *command-line-args*)}
 
   release-gh-pages
   {:doc "Generate a fresh static build and release it to Github Pages."
    :task
    (do (shell "rm -rf public")
-       (run 'build-gh-pages)
+       (run 'build-static)
        (shell "npm run gh-pages"))}
 
   publish-local

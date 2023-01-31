@@ -10,7 +10,7 @@ the library's use.
 
 ### Local Notebook Dev
 
-Start a Clojure process however you like, and run `(user/start!)` to run the
+Start a Clojure process however you like, and run `(user/serve!)` to run the
 Clerk server. This command should open up `localhost:7777`.
 
 ### Github Pages Static Build
@@ -59,9 +59,8 @@ The new release will appear on Clojars.
 
 ## Linting
 
-Code is linted with `clj-kondo`. [Install
-`clj-kondo`](https://github.com/clj-kondo/clj-kondo/blob/master/doc/install.md)
-then run
+Code is linted with `clj-kondo`. Run the following command to trigger the
+linter:
 
 ```
 bb lint
