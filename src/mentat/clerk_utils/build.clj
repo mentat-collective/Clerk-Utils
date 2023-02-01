@@ -67,7 +67,7 @@
   calls [[nextjournal.clerk/show!]] automatically on `(:index opts)` if
   provided.
 
-  All remaining `opts` are forwarded to [[nextjournal.clerk/serve!]]"
+  All remaining `opts` are forwarded to [[nextjournal.clerk/serve!]]."
   [{:keys [cljs-namespaces browse? index] :as opts}]
   (when (seq cljs-namespaces)
     (let [{:keys [js-url]} (shadow/watch! cljs-namespaces)]

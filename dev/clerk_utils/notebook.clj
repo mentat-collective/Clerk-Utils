@@ -44,6 +44,14 @@
 (docs/git-dependency
  "mentat-collective/clerk-utils")
 
+;; `clerk-utils` does not currently export a Clerk dependency, so you'll have to
+;; bring your own. For example:
+
+^{:nextjournal.clerk/visibility {:code :hide}}
+(docs/git-dependency
+ "nextjournal/clerk"
+ "4180ed31c2864687a770f6d4f625303bd8e75437")
+
 ;; Require `mentat.clerk-utils` in your namespace:
 
 ;; ```clj
@@ -52,8 +60,78 @@
 ;;             [nextjournal.clerk :as-alias clerk]))
 ;; ```
 
-;; ## Visibility Macros
+;; > Note that `nextjournal.clerk` is included here using `:as-alias`. We're
+;; > doing this to demo the [visibility macros](#visibility-macros) below, which
+;; > allow you to write Clerk code in a library that will compile even if Clerk
+;; > is not present as a dependency.
+
+;; ## Custom CLJS Builds
+
+;; The `mentat.clerk-utils.build` namespace contains versions of
+;; `nextjournal.clerk/serve!`, `nextjournal.clerk/halt!` and
+;; `nextjournal.clerk/build!` that work just like the originals, but optionally
+;; take a `:cljs-namespaces` key.
+
+;; Some reasons you might want to do this:
 ;;
+;; - You're interested in making more code available to your Clerk viewers. To
+;;   do this, you'll need to extend the [SCI
+;;   environment](https://github.com/babashka/sci) that Clerk uses.
+;; - You want to write `.cljc` notebooks, and write forms in ClojureScript using
+;;   the [`show-cljs` macro](#show-cljs-macro).
+
+;; For this to work you'll need to include the `clerk.render` git dependency
+;; alongside your Clerk dependency:
+
+;; ```clj
+;; {io.github.nextjournal/clerk
+;;  {:git/sha "4180ed31c2864687a770f6d4f625303bd8e75437"}
+;;  io.github.nextjournal/clerk.render
+;;  {:git/url "https://github.com/nextjournal/clerk"
+;;   :git/sha "4180ed31c2864687a770f6d4f625303bd8e75437"
+;;   :deps/root "render"}}
+;; ```
+
+;; Make sure the hashes match!
+
+;; ### Interactive Development
+
+;; The following command starts Clerk and
+;; uses [`shadow-cljs`](https://shadow-cljs.github.io/docs/UsersGuide.html) to
+;; compile a ClojureScript file containing namespace `myns.sci`:
+
+;; ```clj
+;; (require '[mentat.clerk-utils.build :as build])
+;;
+;; (build/serve!
+;;  {:show? true
+;;   :index "src/notebook.clj"
+;;   :cljs-namespaces ['myns.sci]})
+;; ```
+
+;; [`shadow-cljs`](https://shadow-cljs.github.io/docs/UsersGuide.html) serves
+;; the compiled JavaScript from a server that watches all files on the classpath
+;; and recompiles if anything changes.
+;;
+;; When you're finished, call `(build/halt!)` to shut down Clerk and all
+;; `shadow-cljs` processes.
+;;
+;; ### Static Build
+
+;; `build/build!` with the `:cljs-namespaces` key will trigger a release build
+;; of your ClojureScript:
+
+;; ```clj
+;; (build/build!
+;;  {:index "src/notebook.clj"
+;;   :cname "mysite.com"
+;;   :cljs-namespaces ['myns.sci]})
+;; ```
+
+;; ## Customizing Clerk's SCI Environment
+
+;; ## Visibility Macros
+
 ;; These macros allow you to include Clerk code in a library or project that may
 ;; not have `nextjournal.clerk` available on the classpath.
 ;;

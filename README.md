@@ -61,7 +61,7 @@ The following documentation notebooks include examples of the `show-sci` macro:
 
 ## Interactive Documentation via Clerk
 
-The project's [interactive documentation](https://jsxgraph.mentat.org) was
+The project's [interactive documentation](https://clerk-utils.mentat.org) was
 generated using Nextjournal's [Clerk](https://github.com/nextjournal/clerk). If
 you'd like to edit or play with the documentation, you'll need to install
 
