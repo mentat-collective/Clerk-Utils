@@ -211,6 +211,23 @@
   [:h4 "ClojureScript example:"]
   [:pre "square works too: " (custom/square 10)]])
 
+;; ### Clerk Plugins
+
+;; The following projects are all Clerk-compatible and contain namespaces that
+;; make it easy to add them into Clerk's SCI environment with a single command.
+;; See the pages for more detail:
+
+;; - [Leva.cljs](https://leva.mentat.org)
+;; - [Mafs.cljs](https://mafs.mentat.org)
+;; - [JSXGraph.cljs](https://jsxgraph.mentat.org)
+;; - [MathBox.cljs](https://mathbox.mentat.org)
+;; - [MathLive.cljs](https://mathlive.mentat.org)
+
+;; > For a full list of plugins, visit the ["Plugins"
+;; > section](https://github.com/mentat-collective/awesome-clerk#plugins) of
+;; > the [Awesome-Clerk](https://github.com/mentat-collective/awesome-clerk)
+;; > page.
+
 ;; ### Interactive Development
 
 ;; The following command starts Clerk and

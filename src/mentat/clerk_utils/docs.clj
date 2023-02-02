@@ -2,8 +2,7 @@
   "Helpful utilities when writing documentation with Clerk."
   (:require [clojure.java.shell :refer [sh]]
             [clojure.string :as cs]
-            [nextjournal.clerk :as clerk]
-            [nextjournal.clerk.viewer :as v]))
+            [nextjournal.clerk :as clerk]))
 
 (defn git-sha
   "Returns the sha hash of this project's current git revision."

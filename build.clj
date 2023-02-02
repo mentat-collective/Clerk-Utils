@@ -5,7 +5,7 @@
 ;; ## Variables
 
 (def lib 'org.mentat/clerk-utils)
-(def version "0.2.0")
+(def version "0.3.0")
 
 (defn- ->version
   ([] version)
