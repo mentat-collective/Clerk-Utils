@@ -65,23 +65,33 @@
 ;; > allow you to write Clerk code in a library that will compile even if Clerk
 ;; > is not present as a dependency.
 
-;; ## Custom CLJS Builds
+;; ## Custom ClojureScript Builds
+;;
+;; Clerk's [viewers](https://snapshots.nextjournal.com/clerk/build/b12d8b369a69ca4b41fcf4988194dfbc201c6e1c/book.html)
+;; are written in ClojureScript code exposed
+;; through [SCI](https://github.com/babashka/sci), the Small Clojure
+;; Interpreter.
+;;
+;; If you want to use functions in your Clerk viewers that aren't included by
+;; default, you'll need to:
+;;
+;; 1. Find some ClojureScript library you'd like to use, or write your own code
+;;    in a `.cljs` file
+;; 2. Add the new code to Clerk's [SCI
+;;    environment](https://github.com/babashka/sci)
+;; 3. Build a custom version of Clerk's ClojureScript that includes this new
+;;    code.
 
 ;; The `mentat.clerk-utils.build` namespace contains versions of
 ;; `nextjournal.clerk/serve!`, `nextjournal.clerk/halt!` and
-;; `nextjournal.clerk/build!` that work just like the originals, but optionally
-;; take a `:cljs-namespaces` key.
+;; `nextjournal.clerk/build!` that handle this final step for you. They work
+;; just like the originals, but optionally take a `:cljs-namespaces` key.
 
-;; Some reasons you might want to do this:
-;;
-;; - You're interested in making more code available to your Clerk viewers. To
-;;   do this, you'll need to extend the [SCI
-;;   environment](https://github.com/babashka/sci) that Clerk uses.
-;; - You want to write `.cljc` notebooks, and write forms in ClojureScript using
-;;   the [`show-cljs` macro](#show-cljs-macro).
+;; > For another way to expose custom ClojureScript in your notebooks, see
+;; > the [`show-cljs` macro](#show-cljs-macro) section below.
 
-;; For this to work you'll need to include the `clerk.render` git dependency
-;; alongside your Clerk dependency:
+;; For these functions to work you'll need to include the `clerk.render` git
+;; dependency alongside your Clerk dependency:
 
 ;; ```clj
 ;; {io.github.nextjournal/clerk
@@ -92,13 +102,106 @@
 ;;   :deps/root "render"}}
 ;; ```
 
-;; Make sure the hashes match!
+;; > Make sure the hashes match!
+;;
+;; The next sections will show how to add custom ClojureScript, using this
+;; project as an example.
+
+;; #### Writing Custom ClojureScript
+;;
+;;  The [`clerk-utils.custom`](https://github.com/mentat-collective/clerk-utils/blob/main/dev/clerk_utils/custom.cljs)
+;;  namespace looks like this:
+
+;; ```clj
+;; (ns clerk-utils.custom)
+
+;; (defn square
+;;   "Returns the square of `x`"
+;;   [x]
+;;   (* x x))
+;; ```
+;;
+;; Our goal is to be able to use `clerk-utils.custom/square` in a custom viewer,
+;; like this:
+
+(def squared-viewer
+  {:transform-fn clerk/mark-presented
+   :render-fn
+   '(fn [x]
+      [:pre x "² is equal to " (custom/square x) "."])})
+
+;; The code works:
+
+(clerk/with-viewer squared-viewer
+  12)
+
+;; ### Extending SCI
+
+;; To make this work in your project, create a `cljs` file that looks like the
+;; following. The namespace name doesn't matter, we'll use
+;; `clerk-utils.sci-extensions` for this example.
+;;
+;; > Note the inline comments describing what each form does. The real file
+;; lives [here](https://github.com/mentat-collective/clerk-utils/blob/main/dev/clerk_utils/sci_extensions.cljs).
+
+;; ```clj
+;; (ns clerk-utils.sci-extensions
+;;   (:require [clerk-utils.custom]
+;;             ["react" :as react]
+;;             [sci.ctx-store]
+;;             [sci.core :as sci]))
+
+;; ;; This form creates a "lives-within-SCI" version of the `clerk-utils.custom`
+;; ;; namespace by copying all public vars.
+;; (def custom-namespace
+;;   (sci/copy-ns clerk-utils.custom
+;;                (sci/create-ns 'clerk-utils.custom)))
+
+;; ;; This style also works on JavaScript library imports, like this example
+;; ;; for "react":
+;; (def react-namespace
+;;   (sci/copy-ns react (sci/create-ns 'react)))
+
+;; ;; This next form mutates SCI's default environment, merging in your custom code
+;; ;; on top of what Clerk has already configured.
+;; (sci.ctx-store/swap-ctx!
+;;  sci/merge-opts
+;;  {;; Use `:classes` to expose JavaScript classes that you'd like to use in your
+;;   ;; viewer code. `Math/sin` etc will work with this entry:
+;;   :classes    {'Math js/Math}
+
+;;   ;; Adding an entry to this map is equivalent to adding an entry like
+;;   ;; `(:require [clerk-utils.custom])` to a Clojure namespace.
+;;   :namespaces {'clerk-utils.custom custom-namespace
+;;                'react react-namespace}
+
+;;   ;; Add aliases here for namespaces that you've included above. This adds an
+;;   ;; `:as` form to a namespace: `(:require [clerk-utils.custom :as custom])`
+;;   :aliases {'custom 'clerk-utils.custom}})
+;; ```
+;;
+;; The final step is to build a custom ClojureScript bundle that includes this
+;; SCI-extending namespace. See [Interactive
+;; Development](#interactive-development) for instructions on doing this during
+;; live development, and [Static Build](#static-build) for instructions on doing
+;; this for a static site export.
+;;
+;; Once you follow these steps, the [`show-sci` macro](#show-sci-macro) confirms
+;; that the new code is available:
+
+(show-sci
+ [:div
+  [:h4 "JavaScript example:"]
+  [:pre "The react version is " react/version "."]
+  [:h4 "ClojureScript example:"]
+  [:pre "square works too: " (custom/square 10)]])
 
 ;; ### Interactive Development
 
 ;; The following command starts Clerk and
 ;; uses [`shadow-cljs`](https://shadow-cljs.github.io/docs/UsersGuide.html) to
-;; compile a ClojureScript file containing namespace `myns.sci`:
+;; compile a ClojureScript file containing namespace
+;; `clerk-utils.sci-extensions`:
 
 ;; ```clj
 ;; (require '[mentat.clerk-utils.build :as build])
@@ -106,7 +209,7 @@
 ;; (build/serve!
 ;;  {:show? true
 ;;   :index "src/notebook.clj"
-;;   :cljs-namespaces ['myns.sci]})
+;;   :cljs-namespaces ['clerk-utils.sci-extensions]})
 ;; ```
 
 ;; [`shadow-cljs`](https://shadow-cljs.github.io/docs/UsersGuide.html) serves
@@ -125,7 +228,7 @@
 ;; (build/build!
 ;;  {:index "src/notebook.clj"
 ;;   :cname "mysite.com"
-;;   :cljs-namespaces ['myns.sci]})
+;;   :cljs-namespaces ['clerk-utils.sci-extensions]})
 ;; ```
 
 ;; ## Customizing Clerk's SCI Environment
