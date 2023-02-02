@@ -2,6 +2,15 @@
 
 ## [unreleased]
 
+## [0.3.0]
+
+- #11:
+
+  - Adds `mentat.clerk-utils.sci/register-js!` for adding custom JS libraries to
+    Clerk's SCI environment.
+
+  - Adds documentation on how to generate custom ClojureScript builds for Clerk.
+
 - #10:
 
   - Adds `mentat.clerk-utils.css` with `add-css!`, `set-css!` and `reset-css!`
@@ -10,10 +19,10 @@
   - Adds `mentat.clerk-utils.docs` with `git-sha` and `git-dependency` for
     injecting git dependency instructions into a notebook
 
-  - Adds `mentat.clerk-utils.docs` with `serve!`, `build!` and `halt!`
+  - Adds `mentat.clerk-utils.build` with `serve!`, `build!` and `halt!`
     variations that support custom CLJS compilation
 
-## 0.2.0
+## [0.2.0]
 
 - #8:
 
@@ -44,7 +53,7 @@
 
   - Add missing clj-kondo config to the shipped jar.
 
-## 0.1.0
+## [0.1.0]
 
 - #3:
 
@@ -53,7 +62,7 @@
 
   - Upgrades the documentation notebook and adds a solid README.
 
-## 0.0.1
+## [0.0.1]
 
 First real release!
 

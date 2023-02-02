@@ -8,7 +8,8 @@
   {:index index
    :browse? true
    :watch-paths ["dev"]
-   :cljs-namespaces '[clerk-utils.show]})
+   :cljs-namespaces '[clerk-utils.sci-extensions
+                      clerk-utils.show]})
 
 (def static-defaults
   (assoc defaults

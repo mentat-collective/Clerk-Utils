@@ -1,19 +1,26 @@
 # clerk-utils
 
-[![Build Status](https://github.com/mentat-collective/clerk-utils/actions/workflows/kondo.yml/badge.svg?branch=main)](https://github.com/mentat-collective/clerk-utils/actions/workflows/kondo.yml)
-[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/mentat-collective/clerk-utils/blob/main/LICENSE)
-[![cljdoc badge](https://cljdoc.org/badge/org.mentat/clerk-utils)](https://cljdoc.org/d/org.mentat/clerk-utils/CURRENT)
-[![Clojars Project](https://img.shields.io/clojars/v/org.mentat/clerk-utils.svg)](https://clojars.org/org.mentat/clerk-utils)
-
 A small collection of functions and macros that have come in handy while
-documenting libraries with Nextjournal's [Clerk][CLERK].
+documenting libraries with Nextjournal's [Clerk][clerk-url].
+
+[![Build Status][build-status]][build-status-url]
+[![License][license]][license-url]
+[![cljdoc badge][cljdoc]][cljdoc-url]
+[![Clojars Project][clojars]][clojars-url]
+[![Discord Shield][discord]][discord-url]
+
+`clerk-utils` also contains code and guides for generating a [custom
+ClojureScript build for your Clerk
+projects](https://clerk-utils.mentat.org#custom-clojurescript-builds), allowing
+you to use Clerk Plugin projects like [Mafs.cljs](https://mafs.mentat.org),
+[Leva.cljs](https://leva.mentat.org) and more in your Clerk notebooks.
 
 ## Quickstart
 
 Install `clerk-utils` into your Clojure project using the instructions at
 its Clojars page:
 
-[![Clojars Project](https://img.shields.io/clojars/v/org.mentat/clerk-utils.svg)](https://clojars.org/org.mentat/clerk-utils)
+[![Clojars Project][clojars]][clojars-url]
 
 Require `mentat.clerk-utils` and `mentat.clerk-utils.show` in your namespace:
 
@@ -34,9 +41,9 @@ Clerk is available, but will act as `comment` otherwise:
   [:pre (exclaim "I won't run if Clerk is missing")])
 ```
 
-Another example: `us/show-sci` allows you to push Reagent forms directly into
-the client's [SCI environment](https://github.com/babashka/sci) without building
-out a Clerk viewer:
+Another example: `us/show-sci` allows you to push [Reagent][reagent-url] forms
+directly into the client's [SCI environment][sci-url] without building out a
+Clerk viewer:
 
 ```
 (us/show-sci
@@ -61,7 +68,7 @@ The following documentation notebooks include examples of the `show-sci` macro:
 
 ## Interactive Documentation via Clerk
 
-The project's [interactive documentation](https://jsxgraph.mentat.org) was
+The project's [interactive documentation](https://clerk-utils.mentat.org) was
 generated using Nextjournal's [Clerk](https://github.com/nextjournal/clerk). If
 you'd like to edit or play with the documentation, you'll need to install
 
@@ -96,4 +103,17 @@ Copyright © 2022 Sam Ritchie.
 
 Distributed under the [MIT License](LICENSE). See [LICENSE](LICENSE).
 
-[CLERK]: https://clerk.vision
+[clerk-url]: https://clerk.vision
+[build-status-url]: https://github.com/mentat-collective/clerk-utils/actions/workflows/kondo.yml
+[build-status]: https://github.com/mentat-collective/clerk-utils/actions/workflows/kondo.yml/badge.svg?branch=main
+[cljdoc-url]: https://cljdoc.org/d/org.mentat/clerk-utils/CURRENT
+[cljdoc]: https://cljdoc.org/badge/org.mentat/clerk-utils
+[clojars-url]: https://clojars.org/org.mentat/clerk-utils
+[clojars]: https://img.shields.io/clojars/v/org.mentat/clerk-utils.svg
+[discord-url]: https://discord.gg/hsRBqGEeQ4
+[discord]: https://img.shields.io/discord/731131562002743336?style=flat&colorA=000000&colorB=000000&label=&logo=discord
+[license-url]: LICENSE
+[license]: https://img.shields.io/badge/license-MIT-brightgreen.svg
+[github-url]: https://github.com/mentat-collective/clerk-utils
+[reagent-url]: https://reagent-project.github.io
+[sci-url]: https://github.com/babashka/sci
