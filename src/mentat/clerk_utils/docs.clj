@@ -2,7 +2,8 @@
   "Helpful utilities when writing documentation with Clerk."
   (:require [clojure.java.shell :refer [sh]]
             [clojure.string :as cs]
-            [nextjournal.clerk :as clerk]))
+            [nextjournal.clerk :as clerk]
+            [nextjournal.clerk.viewer :as v]))
 
 (defn git-sha
   "Returns the sha hash of this project's current git revision."
@@ -27,18 +28,3 @@
 {io.github.%s
   {:git/sha \"%s\"}}
   ```" slug sha))))
-
-(defn note [form]
-  (nextjournal.clerk/html
-   [:div.rounded-lg.p-4.text-xs.font-sans.bg-blue-100.border-2.border-blue-200.dark:bg-slate-800.dark:border-slate-700
-    form]))
-
-(defn caution [form]
-  (nextjournal.clerk/html
-   [:div.rounded-lg.p-4.text-xs.font-sans.bg-yellow-100.border-2.border-yellow-200.dark:bg-slate-800.dark:border-slate-700
-    form]))
-
-(defn warning [form]
-  (nextjournal.clerk/html
-   [:div.rounded-lg.p-4.text-xs.font-sans.bg-red-100.border-2.border-red-200.dark:bg-slate-800.dark:border-slate-700
-    form]))
