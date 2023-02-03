@@ -1,13 +1,19 @@
-{:pods {clj-kondo/clj-kondo {:version "2023.01.20"}}
+{:deps {org.babashka/http-server {:mvn/version "0.1.11"}
+        org.babashka/cli {:mvn/version "0.2.23"}}
+ :pods {clj-kondo/clj-kondo {:version "2023.01.20"}}
  :tasks
- {:requires ([pod.borkdude.clj-kondo :as clj-kondo])
+ {:requires ([babashka.cli :as cli]
+             [pod.borkdude.clj-kondo :as clj-kondo])
   :init
-  (defn X [cmd]
-    (let [args *command-line-args*]
-      (if (even? (count args))
-        (apply shell cmd args)
-        (do (println "Please supply an even number of arguments!")
-            (System/exit 1)))))
+  (do (def cli-opts
+        (cli/parse-opts *command-line-args* {:coerce {:port :int}}))
+
+      (defn X [cmd]
+        (let [args *command-line-args*]
+          (if (even? (count args))
+            (apply shell cmd args)
+            (do (println "Please supply an even number of arguments!")
+                (System/exit 1))))))
 
   clerk-watch
   {:doc "Start a shadow-cljs watch process that generates this project's custom JS."
@@ -19,6 +25,14 @@
    (apply shell
           "clojure -X:nextjournal/clerk"
           *command-line-args*)}
+
+  serve
+  {:doc "Serve static assets"
+   :requires ([babashka.http-server :as server])
+   :task (server/exec
+          (merge {:port 1337
+                  :dir "public/build"}
+                 cli-opts))}
 
   release-gh-pages
   {:doc "Generate a fresh static build and release it to Github Pages."
@@ -32,7 +46,7 @@
   webserver."
    :task
    (do (run 'build-static)
-       (shell "npm run serve"))}
+       (run 'serve))}
 
   release
   {:doc "Release the library to Clojars."
