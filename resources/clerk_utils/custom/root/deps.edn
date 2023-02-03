@@ -1,0 +1,40 @@
+{:paths ["src" "dev"]
+ :deps {org.clojure/clojure {:mvn/version "{{clj-version}}"}
+        io.github.nextjournal/clerk {:git/sha "{{clerk-sha}}"}}
+ :aliases
+ {:dev
+  {
+
+   }
+
+  ;; This alias is used by https://clerk.garden/.
+  ;;
+  ;; TODO this won't work with Garden, we have to move the deps down.
+  :nextjournal/clerk
+  {:extra-deps
+   {io.github.nextjournal/clerk.render
+    {:git/url "https://github.com/nextjournal/clerk"
+     ;; make sure this sha matches the one in `:deps` above.
+     :git/sha "{{clerk-sha}}"
+     :deps/root "render"}
+
+    ;; This version needs to match the shadow-cljs version declared in
+    ;; `package.json`.
+    thheller/shadow-cljs {:mvn/version "{{shadow-version}}"}
+
+    ;; the clojurescript version must match (or exceed?) the version declared by
+    ;; shadow-cljs:
+    ;; https://github.com/thheller/shadow-cljs/blob/master/project.clj#L40
+    org.clojure/clojurescript {:mvn/version "{{cljs-version}}"}}
+   :exec-fn user/build!
+   :exec-args
+   {:paths    ["src/**"]
+    ;; TODO uncomment this if you want to specify a specific file as your index.
+    ;; If it stays commented and you add more notebooks, Clerk will
+    ;; automatically generate an index for you.
+    ;; :index "src/{{top/file}}/{{main/file}}.clj"
+    :out-path "public"}}
+
+  :watch
+  {:exec-fn   user/start-with-shadow!
+   :exec-args {:watch-paths ["src"]}}}}

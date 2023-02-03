@@ -1,0 +1,27 @@
+{;; This first entry tells shadow-cljs to pull its dependencies from `deps.edn`,
+ ;; and to merge in the specified aliases when doing so.
+ :deps {:aliases [:dev]}
+ :dev-http {{{shadow-port}} "public"}
+ :builds
+ {:clerk
+  {:target :esm
+   :runtime :browser
+   :output-dir "public/js"
+   :js-options {:output-feature-set :es8}
+   :compiler-options
+   {:infer-externs :auto
+    :optimizations :advanced}
+   :modules
+   ;; Note the keyword `:main`. Your final JS bundle will live at
+   ;; `<output-dir>/main.js`. Change this keyword or the `:output-dir` above to
+   ;; tune this.
+   {:main
+    {:entries
+     ;; shadow-cljs will include these namespaces and any namespaces they depend
+     ;; on in your final bundle. The `static-app` entry is required.
+     ;;
+     ;; {{top/ns}}.sci is where all SCI customization happens. If you write any
+     ;; custom CLJS or CLJC, require those namespaces in {{top/ns}}.sci to get
+     ;; them included into the build.
+     [nextjournal.clerk.static-app
+      {{top/ns}}.sci]}}}}}
