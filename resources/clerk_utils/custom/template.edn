@@ -1,13 +1,15 @@
 {:description "FIXME: Clerk custom template docstring."
  :port 7777
  :shadow-port 8765
- :clerk-sha "75f073c4899e37b2259cb2057cbf863b90892897"
+ :clerk-sha "4180ed31c2864687a770f6d4f625303bd8e75437"
  :shadow-version "2.20.14"
  :clj-version "1.11.1"
  :cljs-version "1.11.60"
  :http-server-port 8080
  :cname ""
  :transform
- [["src" "src/{{top/file}}" {"main.clj" "{{main/file}}.clj"}]
-  ["dev" "dev" {"sci.cljs" "{{top/file}}/sci.cljs"
-                "custom.cljs" "{{top/file}}/custom.cljs"}]]}
+ [["src" "src"
+   {"custom.cljs" "{{top/file}}/custom.cljs"
+    "sci_extensions.cljs" "{{top/file}}/sci_extensions.cljs"}]
+  ["notebooks" "notebooks"
+   {"main.clj" "{{top/file}}/{{main/file}}.clj"}]]}

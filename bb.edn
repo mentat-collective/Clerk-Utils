@@ -17,7 +17,7 @@
 
   clerk-watch
   {:doc "Start a shadow-cljs watch process that generates this project's custom JS."
-   :task (X "clojure -X:nextjournal/clerk user/start!")}
+   :task (X "clojure -X:nextjournal/clerk user/serve!")}
 
   build-static
   {:doc "Generate a fresh static build."

@@ -5,28 +5,38 @@
 {{description}}
 
 This project is powered by Clerk. Your first notebook lives at
-`src/{{top/file}}/{{main/file}}.clj`.
+`notebooks/{{top/file}}/{{main/file}}.clj`.
 
 ## Dependencies
-
-`clj`, `shadow-cljs`, `node` and
 
 - [Clojure CLI tools](https://clojure.org/guides/install_clojure)
 - [`babashka`](https://github.com/babashka/babashka#installation)
 
-To publish to GitHub Pages, you'll also need `node` installed, preferably via
+You'll also need `node` installed, preferably via
 [`nvm`](https://github.com/nvm-sh/nvm#installing-and-updating).
 
+TODO we use Babashka. To see all tasks, run
+
+```sh
+bb tasks
+```
+
 ## Developing with Clerk
+
+
 
 To start a server for local Clerk development, run
 
 ```sh
-bb start-clerk
+bb clerk-watch
 ```
 
 This will start the Clerk server at http://localhost:{{port}} with a file
 watcher that updates the page each time any file in the `src` directory changes.
+
+### REPL-Based Development
+
+This is the next level!
 
 To manually start the Clerk webserver, start a REPL by running
 
@@ -37,19 +47,38 @@ clj
 Then start the server:
 
 ```clj
-(start!)
+(serve!)
 ```
 
 To show a file, pass it to `clerk/show!`:
 
 ```clj
-(clerk/show! "src/{{top/file}}/{{main/file}}.clj")
+(clerk/show! "notebooks/{{top/file}}/{{main/file}}.clj")
 ```
 
-These commands work because dev/user.clj requires `nextjournal.clerk` under a
-`clerk` alias, and defines a `start!` function.
+> **Note**
+> These commands work because dev/user.clj requires `nextjournal.clerk` under a
+> `clerk` alias, and defines a `serve!` function.
 
 ## Static Builds
+
+To generate the site to `public/build`:
+
+```sh
+bb build-static
+```
+
+View it with
+
+```
+bb serve
+```
+
+Or do both together with
+
+```
+bb publish-local
+```
 
 ### Local Build
 
@@ -80,12 +109,18 @@ To release to GitHub Pages, run
 bb release-gh-pages
 ```
 
+#### Custom Domain
+
+TODO describe custom name... [follow these
+instructions](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site),
+then pass the `:cname` key in `user.clj`.
+
 ## Linting
 
 Run
 
 ```
-clj-kondo --copy-configs --dependencies --lint "$(clojure -Spath)"
+clj-kondo --copy-configs --dependencies --lint "$(clojure -A:nextjournal/clerk -Spath)"
 ```
 
 Then
