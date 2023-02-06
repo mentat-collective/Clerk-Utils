@@ -6,7 +6,7 @@
     <groupId>org.mentat</groupId>
     <artifactId>clerk-utils</artifactId>
     <name>clerk-utils</name>
-    <description>Clerk Utilities.</description>
+    <description>A collection of functions, macros, guides and templates that have come in handy while documenting libraries with Nextjournal's Clerk.</description>
     <url>https://clerk-utils.mentat.org</url>
     <licenses>
         <license>

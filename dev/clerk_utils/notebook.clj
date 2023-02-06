@@ -364,9 +364,10 @@
 ;;
 ;; `clerk-utils` includes
 ;; a [`deps-new`](https://github.com/seancorfield/deps-new) template called
-;; `clerk-utils/custom` that makes it easy to configure a new Clerk project with
-;; everything described in [Custom ClojureScript
-;; Builds](#custom-clojurescript-builds) already configured.
+;; [`clerk-utils/custom`](https://github.com/mentat-collective/clerk-utils/tree/main/resources/clerk_utils/custom)
+;; that makes it easy to configure a new Clerk project with everything described
+;; in [Custom ClojureScript Builds](#custom-clojurescript-builds) already
+;; configured.
 
 ;; First, install the [`deps-new`](https://github.com/seancorfield/deps-new) tool:
 
@@ -375,14 +376,14 @@
 ;; ```
 
 ;; To create a new Clerk project based on
-;; [`clerk-utils/custom`](https://github.com/nextjournal/clerk-utils/tree/main/resources/clerk-utils/custom)
+;; [`clerk-utils/custom`](https://github.com/mentat-collective/clerk-utils/tree/main/resources/clerk_utils/custom)
 ;; in a folder called `my-notebook-project`, run the following command:
 
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (clerk/md
  (format "
 ```sh
-clojure -Sdeps '{:deps {io.github.nextjournal/clerk-utils {:git/sha \"%s\"}}}' \\
+clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha \"%s\"}}}' \\
 -Tnew create \\
 :template clerk-utils/custom \\
 :name myusername/my-notebook-project
@@ -393,7 +394,7 @@ clojure -Sdeps '{:deps {io.github.nextjournal/clerk-utils {:git/sha \"%s\"}}}' \
 
 ;; If you have an existing Clerk notebook project and are considering adding
 ;; support for custom ClojureScript, you might consider
-;; using [`clerk-utils/custom`](https://github.com/nextjournal/clerk-utils/tree/main/resources/clerk-utils/custom)
+;; using [`clerk-utils/custom`](https://github.com/mentat-collective/clerk-utils/tree/main/resources/clerk_utils/custom)
 ;; to get some ideas on how to structure your own project.
 
 ;; ## Visibility Macros
