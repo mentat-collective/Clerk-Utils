@@ -1,7 +1,7 @@
 {:paths ["src" "dev"]
  :deps {org.clojure/clojure          {:mvn/version "{{clj-version}}"}
         io.github.nextjournal/clerk  {:git/sha "{{clerk-sha}}"}
-        io.github.mentat/clerk-utils {:local/root "../clerk-utils"}}
+        io.github.mentat/clerk-utils {:git/sha "{{clerk-utils-sha}}"}}
  :aliases
  {:nextjournal/clerk
   {:extra-deps
