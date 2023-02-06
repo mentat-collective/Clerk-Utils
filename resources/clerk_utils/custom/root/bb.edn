@@ -30,14 +30,14 @@
   {:doc "Serve static assets"
    :requires ([babashka.http-server :as server])
    :task (server/exec
-          (merge {:port 1337
+          (merge {:port {{http-server-port}}
                   :dir "public/build"}
                  cli-opts))}
 
   release-gh-pages
   {:doc "Generate a fresh static build and release it to Github Pages."
    :task
-   (do (shell "rm -rf public")
+   (do (shell "rm -rf public/build")
        (run 'build-static)
        (shell "npm run gh-pages"))}
 
@@ -48,11 +48,7 @@
    (do (run 'build-static)
        (run 'serve))}
 
-  release
-  {:doc "Release the library to Clojars."
-   :task (shell "clojure -T:build publish")}
-
   lint
   {:doc "Lint the src and dev directories with clj-kondo."
    :task (clj-kondo/print!
-          (clj-kondo/run! {:lint ["src" "dev"]}))}}}
+          (clj-kondo/run! {:lint ["src" "dev" "notebooks"]}))}}}

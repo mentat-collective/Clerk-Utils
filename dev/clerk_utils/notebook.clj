@@ -8,7 +8,7 @@
             [mentat.clerk-utils.show :refer [show-sci]]
             [nextjournal.clerk :as clerk]))
 
-;; # clerk-utils
+;; # Clerk-Utils
 ;;
 ;; A small collection of functions and macros that have come in handy while
 ;; documenting libraries with Nextjournal's [Clerk](https://clerk.vision/).
@@ -248,6 +248,12 @@
 ;; the compiled JavaScript from a server that watches all files on the classpath
 ;; and recompiles if anything changes.
 ;;
+;; > This command will either generate a `package.json` file for you, or add
+;; > dependencies to your existing `package.json`. These dependencies come from
+;; > Clerk, and from any ClojureScript libraries that depend on code
+;; > from [`npm`](https://www.npmjs.com/). Commit this file to CI, along with
+;; > `package-lock.json`.
+;;
 ;; When you're finished, call `(build/halt!)` to shut down Clerk and all
 ;; `shadow-cljs` processes.
 ;;
@@ -262,8 +268,133 @@
 ;;   :cname "mysite.com"
 ;;   :cljs-namespaces ['clerk-utils.sci-extensions]})
 ;; ```
+;;
+;; By default, this command will produce a build in your project's
+;; `public/build` directory. You can control this by passing your preferred
+;; location with the `:output-path` key.
+;;
+;; If you intend to serve your static build on GitHub pages from a custom site
+;; like `mysite.com`, passing the address via the `:cname` option will instruct
+;; `build/build!` to create the required CNAME file in your `:output-path`.
+;;
+;; The build uses relative links for the custom JavaScript bundle; because of
+;; this you won't be able to open `public/build/index.html` directly. You'll
+;; need to run an HTTP server pointed at the `public/build` directory.
+;;
+;; One way to do this is with
+;; Babashka's [http-server](https://github.com/babashka/http-server/#babashka).
+;; The `bb serve` command declared in [this project's `bb.edn`
+;; file](https://github.com/mentat-collective/clerk-utils/blob/main/bb.edn)
+;; provides a nice template.
+;;
+;; For a probably-built-in solution, you could also use `python3`:
 
-;; ## Customizing Clerk's SCI Environment
+;; ```sh
+;; # sub in your own port and output-dir
+;; python3 -m http.server 1337 --directory public/build
+;; ```
+;;
+;; #### Clerk Garden
+;;
+;; Nextjournal runs a site called [Clerk Garden](https://github.clerk.garden/)
+;; that can generate and host your static builds for you. To make your project
+;; Garden-compatible, you'll need to:
+
+;; - Host the project on GitHub
+
+;; - Create a `:nextjournal/clerk` alias in your `deps.edn` file with an
+;;   `:exec-fn` pointing to `mentat.clerk-utils.build/build!`, and an
+;;   `:exec-args` entry with all arguments you'd like to supply.
+;;
+;; - Visit https://clerk.garden/your-org/your-project to see your build.
+;;
+;; > Note that this URL will not automatically update on pushes to GitHub!
+;; > You'll need to visit the url with `?update=1` appended to force it to
+;; > update.
+;;
+;; Here is an example Garden-compatible `:aliases` entry from this project:
+
+;; ```clj
+;; :aliases
+;; {:nextjournal/clerk
+;;  {:extra-paths ["dev"]
+;;   :extra-deps
+;;   {io.github.nextjournal/clerk
+;;    {:git/sha "4180ed31c2864687a770f6d4f625303bd8e75437"}
+;;    io.github.nextjournal/clerk.render
+;;    {:git/url "https://github.com/nextjournal/clerk"
+;;     :git/sha "4180ed31c2864687a770f6d4f625303bd8e75437"
+;;     :deps/root "render"}}
+;;   :exec-fn mentat.clerk-utils.build/build!
+;;   :exec-args
+;;   {:index "dev/clerk_utils/notebook.clj"
+;;    :paths ["dev/clerk_utils/show.cljc"]
+;;    :cname "clerk-utils.mentat.org"
+;;    :git/url "https://github.com/mentat-collective/clerk-utils"
+;;    :cljs-namespaces ['clerk-utils.sci-extensions
+;;                      'clerk-utils.show]}}}
+;; ```
+;;
+;; I personally like to call `build!` from the REPL, so for this project I've
+;; created a function `build!` in `dev/user.clj`:
+
+;; ```clj
+;; (def static-defaults
+;;   {:index "dev/clerk_utils/notebook.clj"
+;;    :paths ["dev/clerk_utils/show.cljc"]
+;;    :cname "clerk-utils.mentat.org"
+;;    :git/url "https://github.com/mentat-collective/clerk-utils"
+;;    :cljs-namespaces ['clerk-utils.sci-extensions
+;;                      'clerk-utils.show]})
+
+;; (defn build!
+;;   "Alias of [[mentat.clerk-utils.build/build!]] with [[static-defaults]] supplied as
+;;   default arguments.
+
+;;   Any supplied `opts` overrides the defaults."
+;;   [opts]
+;;   (mentat.clerk-utils.build/build!
+;;    (merge static-defaults opts)))
+;; ```
+;;
+;; and my actual `:nextjournal/clerk` alias contains a `:exec-fn user/build!`
+;; entry.
+;;
+;; ## Project Template
+;;
+;; `clerk-utils` includes
+;; a [`deps-new`](https://github.com/seancorfield/deps-new) template called
+;; `clerk-utils/custom` that makes it easy to configure a new Clerk project with
+;; everything described in [Custom ClojureScript
+;; Builds](#custom-clojurescript-builds) already configured.
+
+;; First, install the [`deps-new`](https://github.com/seancorfield/deps-new) tool:
+
+;; ```sh
+;; clojure -Ttools install io.github.seancorfield/deps-new '{:git/tag "v0.4.13"}' :as new
+;; ```
+
+;; To create a new Clerk project based on
+;; [`clerk-utils/custom`](https://github.com/nextjournal/clerk-utils/tree/main/resources/clerk-utils/custom)
+;; in a folder called `my-notebook-project`, run the following command:
+
+^{:nextjournal.clerk/visibility {:code :hide}}
+(clerk/md
+ (format "
+```sh
+clojure -Sdeps '{:deps {io.github.nextjournal/clerk-utils {:git/sha \"%s\"}}}' \\
+-Tnew create \\
+:template clerk-utils/custom \\
+:name myusername/my-notebook-project
+```" (docs/git-sha)))
+
+;; The README.md file in the generated project contains information on how to
+;; extend and develop within the new project.
+
+;; If you have an existing Clerk notebook project and are considering adding
+;; support for custom ClojureScript, you might consider
+;; using [`clerk-utils/custom`](https://github.com/nextjournal/clerk-utils/tree/main/resources/clerk-utils/custom)
+;; to get some ideas on how to structure your own project.
 
 ;; ## Visibility Macros
 

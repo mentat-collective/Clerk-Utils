@@ -1,7 +1,7 @@
-# clerk-utils
+# Clerk-Utils
 
-A small collection of functions and macros that have come in handy while
-documenting libraries with Nextjournal's [Clerk][clerk-url].
+A collection of functions, macros, guides and templates that have come in handy
+while documenting libraries with Nextjournal's [Clerk][clerk-url].
 
 [![Build Status][build-status]][build-status-url]
 [![License][license]][license-url]
@@ -9,11 +9,15 @@ documenting libraries with Nextjournal's [Clerk][clerk-url].
 [![Clojars Project][clojars]][clojars-url]
 [![Discord Shield][discord]][discord-url]
 
-`clerk-utils` also contains code and guides for generating a [custom
-ClojureScript build for your Clerk
-projects](https://clerk-utils.mentat.org#custom-clojurescript-builds), allowing
-you to use Clerk Plugin projects like [Mafs.cljs](https://mafs.mentat.org),
-[Leva.cljs](https://leva.mentat.org) and more in your Clerk notebooks.
+`clerk-utils` also contains:
+
+- Code and guides for generating a [custom ClojureScript build for your Clerk
+  projects][custom-cljs-url],
+  allowing you to use Clerk Plugin projects like
+  [Mafs.cljs](https://mafs.mentat.org), [Leva.cljs](https://leva.mentat.org) and
+  more in your Clerk notebooks.
+- The [`clerk-utils/custom` template][clerk-utils-custom-url] for generating a
+  Clerk project configured for [custom ClojureScript][custom-cljs-url].
 
 ## Quickstart
 
@@ -117,3 +121,5 @@ Distributed under the [MIT License](LICENSE). See [LICENSE](LICENSE).
 [github-url]: https://github.com/mentat-collective/clerk-utils
 [reagent-url]: https://reagent-project.github.io
 [sci-url]: https://github.com/babashka/sci
+[custom-cljs-url]: https://clerk-utils.mentat.org#custom-clojurescript-builds
+[clerk-utils-custom-url]: https://github.com/mentat-collective/clerk-utils/blob/main/resources/clerk_utils/custom
