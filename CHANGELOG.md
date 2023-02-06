@@ -4,6 +4,19 @@
 
 ## [0.3.0]
 
+- #13:
+
+  - Adds a shutdown hook to `mentat.clerk-utils.build` that calls `halt!` when
+    the JVM shuts down
+
+  - Switches from npm http-server to babashka's http-server, slimming down the
+    required entries in `package.json` just a touch more
+
+  - adds the `clerk-utils/custom` `deps-new` template in the `resources`
+    directory, along with an entry in the docs notebook on how to run it. The
+    `resources/clerk-utils/custom` directory has a detailed README, as does the
+    generated project.
+
 - #11:
 
   - Adds `mentat.clerk-utils.sci/register-js!` for adding custom JS libraries to

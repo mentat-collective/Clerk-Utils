@@ -85,6 +85,15 @@
   (reset-viewer-js!)
   (clerk/halt!))
 
+;; This shutdown hook ensures good resource cleanup in the case of a sudden
+;; process shutdown.
+(-> (Runtime/getRuntime)
+    (.addShutdownHook
+     (Thread.
+      (fn []
+        (println "Calling `mentat.clerk-utils.build/halt!` on shutdown...")
+        halt!))))
+
 (defn build!
   "Version of [[nextjournal.clerk/build!]] that supports custom CLJS compilation.
 

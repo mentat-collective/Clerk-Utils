@@ -6,7 +6,9 @@ ClojureScript
 Builds"](https://clerk-utils.mentat.org/#custom-clojurescript-builds) section of
 the [`clerk-utils` documentation notebook][clerk-utils-url] already configured.
 
-To the the template, install the [`deps-new`][deps-new-url] tool:
+See create a project with
+
+To use the template, install the [`deps-new`][deps-new-url] tool:
 
 ```sh
 clojure -Ttools install io.github.seancorfield/deps-new '{:git/tag "v0.4.13"}' :as new
@@ -21,8 +23,11 @@ clojure -Sdeps '{:deps {io.github.nextjournal/clerk-utils {:git/tag "v0.3.0"}}}'
 :name myusername/my-notebook-project
 ```
 
-> **Note**
+See https://github.com/mentat-collective/clerk-utils-custom-template for an
+example of a fresh project generated from this template, with `:name
+mentat-collective/clerk-utils-custom-template`.
 
+> **Note**
 > The `:name` argument should match the GitHub slug (ie,
 > `org_name/project_name`) where you expect to host the project. The above
 > command will create a new project in the folder `my-notebook-project` in the

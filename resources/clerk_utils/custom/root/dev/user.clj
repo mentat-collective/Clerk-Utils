@@ -43,15 +43,6 @@
   halt!
   b/halt!)
 
-;; This shutdown hook ensures good resource cleanup in the case of a sudden
-;; process shutdown.
-(-> (Runtime/getRuntime)
-    (.addShutdownHook
-     (Thread.
-      (fn []
-        (println "Calling `halt!` on shutdown...")
-        halt!))))
-
 (defn build!
   "Alias of [[mentat.clerk-utils.build/build!]] with [[static-defaults]] supplied
   as default arguments.
