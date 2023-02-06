@@ -4,10 +4,24 @@
 
 {{description}}
 
-This project is powered by Clerk. Your first notebook lives at
+This project is powered by [Clerk][clerk-url] Your first notebook lives at
 `notebooks/{{top/file}}/{{main/file}}.clj`.
 
+This project allows you to interactively develop [Clerk notebooks][clerk-url]
+that make use of [custom
+ClojureScript](https://clerk-utils.mentat.org/#custom-clojurescript-builds)
+inside of your project's [viewers](https://book.clerk.vision#viewers), and
+produce static builds of these notebooks ready for publication via [GitHub
+Pages](https://pages.github.com/) or [Clerk's Garden](https://clerk.garden/).
+
+> **Note**
+> This README contains a good amount of Getting Started material. Feel free to
+> delete anything that you don't want to keep, or move it to a file like
+> `DEVELOPING.md`.
+
 ## Dependencies
+
+Install the following dependencies:
 
 - [Clojure CLI tools](https://clojure.org/guides/install_clojure)
 - [`babashka`](https://github.com/babashka/babashka#installation)
@@ -15,33 +29,75 @@ This project is powered by Clerk. Your first notebook lives at
 You'll also need `node` installed, preferably via
 [`nvm`](https://github.com/nvm-sh/nvm#installing-and-updating).
 
-TODO we use Babashka. To see all tasks, run
+Run the following command to see all of the [Babashka
+Tasks](https://book.babashka.org/#tasks) declared in `bb.edn`:
 
 ```sh
 bb tasks
 ```
 
+## Choosing an Editor
+
+Clerk is a notebook environment that requires you to choose your own text editor
+to work with the source files that generate your notebooks.
+
+Here are links to guides for the most popular editors and Clojure plugins::
+
+- [Calva](https://calva.io/jack-in-guide/) for [Visual Studio Code](https://code.visualstudio.com/)
+- [Cider](https://docs.cider.mx/cider/basics/up_and_running.html#launch-an-nrepl-server-from-emacs) for [Emacs](https://www.gnu.org/software/emacs/)
+- [Cursive](https://cursive-ide.com/userguide/repl.html) for [Intellij IDEA](https://www.jetbrains.com/idea/download/#section=mac)
+- [Clojure-Vim](https://github.com/clojure-vim/vim-jack-in) for [Vim](https://www.vim.org/) and [Neovim](https://neovim.io/)
+
+> If this is your first time using Clojure, I recommend
+> [Calva](https://calva.io/jack-in-guide/) for [Visual Studio
+> Code](https://code.visualstudio.com/).
+
 ## Developing with Clerk
 
+You can develop against Clerk using its file watcher, using manual calls to
+`clerk/show!`, or with a combination of both.
 
+### Via File-Watcher
 
-To start a server for local Clerk development, run
+The simplest way to interact with Clerk is with Clerk's [file watcher
+mode](https://book.clerk.vision/#file-watcher).
+
+Run the following command to run the `serve!` function in `dev/user.clj`:
 
 ```sh
 bb clerk-watch
 ```
 
-This will start the Clerk server at http://localhost:{{port}} with a file
+Clerk will watch for changes of any file in the `notebooks` directory. The
+ClojureScript build running in the background will pick up any changes to any
+file in the `src` directory.
+
+Change this by changing the value under `:watch-paths` in `user/serve-defaults`,
+or passing an override to `bb clerk-watch`:
+
+```
+bb clerk-watch :watch-paths '["different_directory"]'
+```
+
+This will start the Clerk server at http://localhost:{{clerk-port}} with a file
 watcher that updates the page each time any file in the `src` directory changes.
 
 ### REPL-Based Development
 
-This is the next level!
+Alternatively, follow your editor's instructions (see ["Choosing an
+Editor"](#choosing-an-editor) above) to start a Clojure REPL, and then run
+`(user/serve!)`.
 
-To manually start the Clerk webserver, start a REPL by running
+To show or reload a particular notebook, call `nextjournal.clerk/show!` with the
+file's path as argument. The [Book of Clerk](https://book.clerk.vision) has
+[good instructions on how to configure your editor for
+this](https://book.clerk.vision/#editor-integration).
+
+You can try this without any editor support by starting a REPL from the command
+line:
 
 ```sh
-clj
+clj -A:nextjournal/clerk
 ```
 
 Then start the server:
@@ -60,70 +116,113 @@ To show a file, pass it to `clerk/show!`:
 > These commands work because dev/user.clj requires `nextjournal.clerk` under a
 > `clerk` alias, and defines a `serve!` function.
 
+## Custom ClojureScript and JavaScript
+
+All ClojureScript code you add to `src/{{top/file}}/custom.cljs` is available
+for use inside any [custom viewer code you
+write](https://book.clerk.vision/#writing-viewers).
+
+This is made possible by the code in `src/{{top/file}}/sci_viewers.cljs`. If you
+want to add more namespaces, follow the instructions in `sci_viewers.cljs` to
+get them into Clerk's SCI environment.
+
+That file also contains instructions on how to make JavaScript and NPM
+dependencies available to your viewers.
+
 ## Static Builds
 
-To generate the site to `public/build`:
+Once you're ready to share your work, run the following command to generate a
+standalone static build of your project to the `public/build` directory:
 
 ```sh
 bb build-static
 ```
 
-View it with
+Start a local webserver and view the static build with the following command:
 
 ```
 bb serve
 ```
 
-Or do both together with
+Or run both commands in sequence with:
 
 ```
 bb publish-local
 ```
 
-### Local Build
+> By default, the static build will include every file in the `notebooks`
+> directory. Change this by changing the `:paths` entry in `static-defaults`
+> inside `dev/user.clj`.
 
-Run
+### GitHub
 
+If you push this project to GitHub, the project is configured to publish a
+static build to [GitHub Pages](https://pages.github.com/) on each commit to the
+`main` branch.
+
+> Disable this by deleting the `.github/workflows/gh-pages.yml` file.
+
+To host this project on GitHub:
+
+- [Create a GitHub repository](https://github.com/new). Ideally the owner
+  matches `{{scm/user}}` and the project name is `{{scm/repo}}`.
+- Run the following in this project's directory:
+
+```sh
+git init
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:{{raw-name}}.git
+git push -u origin main
 ```
-bb build-static
-```
 
-To generate a static site locally.
-
-### Push to GitHub
-
-Create a repo at https://github.com/new.
-
-### Garden
-
-The easiest way to share a static build is to push to GitHub, then visit
-
-https://github.clerk.garden/{{raw-name}}
-
+Then visit https://github.com/{{raw-name}} to see your site.
 
 ### GitHub Pages
 
-To release to GitHub Pages, run
+If you've hosted your project on GitHub, run the following to manually deploy your site to GitHub Pages:
 
 ```
 bb release-gh-pages
 ```
 
-#### Custom Domain
+By default your site will live at https://{{scm/user}}.github.io/{{scm/repo}}.
 
-TODO describe custom name... [follow these
-instructions](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site),
-then pass the `:cname` key in `user.clj`.
+### Clerk Garden
 
-## Linting
+Nextjournal runs a site called [Clerk Garden](https://github.clerk.garden/) that
+can generate and host your static builds for you.
 
-Run
+Once your project is hosted on GitHub, simply visit
+
+https://github.clerk.garden/{{raw-name}}
+
+to build and visit your compiled static site.
+
+> Note that this URL will not automatically update on pushes to GitHub! You'll
+> need to visit the url with `?update=1` appended to force it to update.
+
+### Custom Domain
+
+If you're hosting your static site at a custom domain ([see these
+instructions](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)),
+modify `static-defaults` in `dev/user.clj` to pass the URL via the `:cname` key.
+
+## Linting with `clj-kondo`
+
+This project is configured with a GitHub action to lint all files using
+[`clj-kondo`](https://github.com/clj-kondo/clj-kondo).
+
+> Disable this by deleting the `.github/workflows/kondo.yml` file.
+
+To initialize linting, run the following command:
 
 ```
 clj-kondo --copy-configs --dependencies --lint "$(clojure -A:nextjournal/clerk -Spath)"
 ```
 
-Then
+and commit all generated files.
 
 ```
 bb lint
@@ -140,5 +239,6 @@ _section of the `README.md` file!_
 
 Distributed under the Eclipse Public License version 1.0.
 
+[clerk-url]: https://clerk.vision
 [license]: https://img.shields.io/badge/License-EPL%201.0-green.svg
 [license-url]: LICENSE

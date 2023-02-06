@@ -51,4 +51,4 @@
   lint
   {:doc "Lint the src and dev directories with clj-kondo."
    :task (clj-kondo/print!
-          (clj-kondo/run! {:lint ["src" "dev"]}))}}}
+          (clj-kondo/run! {:lint ["src" "dev" "notebooks"]}))}}}

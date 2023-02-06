@@ -5,20 +5,26 @@
   "notebooks/{{top/file}}/{{main/file}}.clj")
 
 (def defaults
-  {
-   ;; TODO change to "Comment this line" if you want to specify a specific file
-   ;; as your index. If it stays commented and you add more notebooks, Clerk
-   ;; will automatically generate an index for you.
+  {;; NOTE by default, your project's first notebook is registered as its index;
+   ;; this means that static builds will populate `index.html` with this
+   ;; notebook.
+   ;;
+   ;; Comment out the following line to tell Clerk to generate its own index
+   ;; with a list of all built pages.
    :index index
-   :browse? true
-   :watch-paths ["notebooks"]
    :cljs-namespaces
    '[{{top/ns}}.sci-extensions]})
+
+(def serve-defaults
+  (assoc defaults
+         :port {{clerk-port}}
+         :watch-paths ["notebooks"]
+         :browse? true))
 
 (def static-defaults
   (assoc defaults
          :browse? false
-         :paths ["notebooks/**"]
+         :paths ["notebooks/**.clj"]
          ;; Uncomment this if you have a custom cname.
          :cname "{{cname}}"
          :git/url "https://github.com/{{raw-name}}"))
@@ -31,11 +37,20 @@
   ([] (serve! {}))
   ([opts]
    (b/serve!
-    (merge defaults opts))))
+    (merge serve-defaults opts))))
 
 (def ^{:doc "Alias for [[mentat.clerk-utils.build/halt!]]."}
   halt!
   b/halt!)
+
+;; This shutdown hook ensures good resource cleanup in the case of a sudden
+;; process shutdown.
+(-> (Runtime/getRuntime)
+    (.addShutdownHook
+     (Thread.
+      (fn []
+        (println "Calling `halt!` on shutdown...")
+        halt!))))
 
 (defn build!
   "Alias of [[mentat.clerk-utils.build/build!]] with [[static-defaults]] supplied

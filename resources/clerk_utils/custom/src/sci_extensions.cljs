@@ -3,7 +3,11 @@
               [sci.ctx-store]
               [sci.core :as sci]))
 
-;; ## Custom ClojureScript
+;; ## SCI Environment Extension
+;;
+;; This namespace extends the SCI environment used by Clerk, making available
+;; any custom ClojureScript you'd like to use while [writing
+;; viewers](https://book.clerk.vision/#writing-viewers) for your notebooks.
 
 ;; This form creates a "lives-within-SCI" version of the `clerk-utils.custom`
 ;; namespace by copying all public vars.

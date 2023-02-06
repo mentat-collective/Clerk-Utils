@@ -8,7 +8,7 @@
             [mentat.clerk-utils.show :refer [show-sci]]
             [nextjournal.clerk :as clerk]))
 
-;; # Clerk-utils
+;; # Clerk-Utils
 ;;
 ;; A small collection of functions and macros that have come in handy while
 ;; documenting libraries with Nextjournal's [Clerk](https://clerk.vision/).
@@ -248,6 +248,12 @@
 ;; the compiled JavaScript from a server that watches all files on the classpath
 ;; and recompiles if anything changes.
 ;;
+;; > This command will either generate a `package.json` file for you, or add
+;; > dependencies to your existing `package.json`. These dependencies come from
+;; > Clerk, and from any ClojureScript libraries that depend on code
+;; > from [`npm`](https://www.npmjs.com/). Commit this file to CI, along with
+;; > `package-lock.json`.
+;;
 ;; When you're finished, call `(build/halt!)` to shut down Clerk and all
 ;; `shadow-cljs` processes.
 ;;
@@ -369,7 +375,7 @@
 ;; ```
 
 ;; To create a new Clerk project based on
-;; [`clerk-utils/custom`](https://github.com/nextjournal/clerk-utils/tree/main/resources/clerk-utils/custom),
+;; [`clerk-utils/custom`](https://github.com/nextjournal/clerk-utils/tree/main/resources/clerk-utils/custom)
 ;; in a folder called `my-notebook-project`, run the following command:
 
 ^{:nextjournal.clerk/visibility {:code :hide}}
@@ -382,7 +388,13 @@ clojure -Sdeps '{:deps {io.github.nextjournal/clerk-utils {:git/sha \"%s\"}}}' \
 :name myusername/my-notebook-project
 ```" (docs/git-sha)))
 
-;; TODO finish notes, then add to README.md.
+;; The README.md file in the generated project contains information on how to
+;; extend and develop within the new project.
+
+;; If you have an existing Clerk notebook project and are considering adding
+;; support for custom ClojureScript, you might consider
+;; using [`clerk-utils/custom`](https://github.com/nextjournal/clerk-utils/tree/main/resources/clerk-utils/custom)
+;; to get some ideas on how to structure your own project.
 
 ;; ## Visibility Macros
 

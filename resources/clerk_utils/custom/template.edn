@@ -1,7 +1,7 @@
-{:description "FIXME: Clerk custom template docstring."
- :port 7777
- :shadow-port 8765
+{:description "TODO replace me with a description of your project!"
+ :clerk-port 7777
  :clerk-sha "4180ed31c2864687a770f6d4f625303bd8e75437"
+ :shadow-port 8765
  :shadow-version "2.20.14"
  :clj-version "1.11.1"
  :cljs-version "1.11.60"
