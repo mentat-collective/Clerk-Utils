@@ -14,7 +14,7 @@
 
   - adds the `clerk-utils/custom` `deps-new` template in the `resources`
     directory, along with an entry in the docs notebook on how to run it. The
-    `resources/clerk-utils/custom` directory has a detailed README, as does the
+    `resources/clerk_utils/custom` directory has a detailed README, as does the
     generated project.
 
 - #11:
