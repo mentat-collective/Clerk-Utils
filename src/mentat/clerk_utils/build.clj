@@ -72,10 +72,9 @@
   (when (seq cljs-namespaces)
     (let [{:keys [js-url]} (shadow/watch! cljs-namespaces)]
       (set-viewer-js! js-url)))
-  (try (clerk/serve! opts)
-       (finally
-         (when (and browse? index)
-           (clerk/show! index)))))
+  (when (and browse? index)
+    (clerk/show! index))
+  (clerk/serve! opts))
 
 (defn halt!
   "Version of [[nextjournal.clerk/halt!]] that additionally kills any shadow-cljs

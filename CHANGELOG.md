@@ -2,6 +2,19 @@
 
 ## [unreleased]
 
+- #:
+
+  - Fix broken deps reference in `clerk-utils/custom` template instructions
+    (closes #15)
+
+  - In `mentat.clerk-utils.build/serve!`, call `clerk/show!` before
+    `clerk/serve!` to prevent flashing loading screen, if an index is supplied.
+
+  - Fix incorrect docstrings in project template `bb.edn`
+
+  - Add `config.edn` to `clerk-utils/custom` template, so that future
+    `clj-kondo` commands (like `--copy-config` calls etc) work.
+
 ## [0.3.0]
 
 - #13:
