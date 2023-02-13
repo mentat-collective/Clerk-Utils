@@ -1,5 +1,8 @@
 # Changelog
 
+- #18 adds a `provided` dependency on `clerk` to the published jar, so that
+  cljdoc's analysis will succeed.
+
 ## [unreleased]
 
 - #16:
