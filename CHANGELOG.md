@@ -2,7 +2,7 @@
 
 ## [unreleased]
 
-- #:
+- #16:
 
   - Fix broken deps reference in `clerk-utils/custom` template instructions
     (closes #15)
