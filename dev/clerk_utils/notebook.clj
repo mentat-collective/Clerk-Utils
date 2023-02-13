@@ -124,6 +124,9 @@
 ;; Our goal is to be able to use `clerk-utils.custom/square` in a custom viewer,
 ;; like this:
 
+(clerk/eval-cljs
+ '(require '[clerk-utils.custom :as custom]))
+
 (def squared-viewer
   {:transform-fn clerk/mark-presented
    :render-fn
@@ -203,6 +206,9 @@
 ;;
 ;; Once you follow these steps, the [`show-sci` macro](#show-sci-macro) confirms
 ;; that the new code is available:
+
+(clerk/eval-cljs
+ '(require '["react" :as react]))
 
 (show-sci
  [:div
@@ -456,7 +462,7 @@ clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha \"%s\"
  (let [text "Include any Reagent vector!"]
    [:pre text]))
 
-;; Other data structures are presented with `[v/inspect ...]`:
+;; Other data structures are presented with `[nextjournal.clerk.viewer/inspect ...]`:
 
 (show-sci
  {:key "value"})
@@ -464,7 +470,7 @@ clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha \"%s\"
 ;; To present a vector as code, manually wrap it in `[v/inspect ...]`:
 
 (show-sci
- [v/inspect
+ [nextjournal.clerk.viewer/inspect
   (let [text "Include any Reagent vector!"]
     [:pre text])])
 
@@ -497,24 +503,21 @@ clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha \"%s\"
  (defn square [x]
    (* x x))
 
- ;; Note that you must prepend the namespace onto the var annotated with
- ;; `::clerk/sync`:
- (let [!state clerk-utils.notebook/!state]
-   [:<>
-    [:div
-     [:input
-      {:type :range :min 0 :max 10 :step 1
-       :value @!state
-       :on-change
-       (fn [target]
-         (let [v (.. target -target -value)]
-           (reset! !state (js/parseInt v))))}]
-     " " @!state]
-    [v/inspect
-     (v/tex
-      (str @!state
-           "^2 = "
-           (square @!state)))]]))
+ [:<>
+  [:div
+   [:input
+    {:type :range :min 0 :max 10 :step 1
+     :value @!state
+     :on-change
+     (fn [target]
+       (let [v (.. target -target -value)]
+         (reset! !state (js/parseInt v))))}]
+   " " @!state]
+  [nextjournal.clerk.viewer/inspect
+   (nextjournal.clerk.viewer/tex
+    (str @!state
+         "^2 = "
+         (square @!state)))]])
 
 ;; These client-side changes will propagate to the server-side version of the
 ;; atom, and will be available at the REPL:
