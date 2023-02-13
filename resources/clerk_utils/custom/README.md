@@ -15,7 +15,7 @@ clojure -Ttools install io.github.seancorfield/deps-new '{:git/tag "v0.4.13"}' :
 Then create a project using the `clerk-utils/custom` template:
 
 ```
-clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/tag "v0.3.0"}}}' \
+clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha "582c804b90086ab3d0ed31b3b4777df79bf0baa6"}}}' \
 -Tnew create \
 :template clerk-utils/custom \
 :name myusername/my-notebook-project
@@ -30,6 +30,10 @@ mentat-collective/clerk-utils-custom-template`.
 > `org_name/project_name`) where you expect to host the project. The above
 > command will create a new project in the folder `my-notebook-project` in the
 > directory where you run the command.
+>
+> To use a different version of the template, replace the `:git/sha` above with
+> the sha of version you need from the [Clerk-Utils commit
+> history](https://github.com/mentat-collective/Clerk-Utils/commits/main).
 
 The generated project will contains more guides and information in its
 `README.md` and in the generated Clerk notebook.
