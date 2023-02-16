@@ -18,10 +18,16 @@
  sci/merge-opts
  {;; Use `:classes` to expose JavaScript classes that you'd like to use in your
   ;; viewer code. `Math/sin` etc will work with this entry:
-  :classes    {'Math  js/Math}
+  :classes {'Math js/Math}
 
-  ;; TODO note about js-classes.
-  :js-classes {"react" react}
+  ;; `:js-libs` allows you to make libraries from NPM like "react" available to
+  ;; `require` calls like this:
+  ;;
+  ;; ```clj
+  ;; (nextjournal.clerk/eval-cljs
+  ;;   '(require '["react" :as my-alias]))
+  ;; ```
+  :js-libs {"react" react}
 
   ;; Adding an entry to this map is equivalent to adding an entry like
   ;; `(:require [clerk-utils.custom])` to a Clojure namespace.
