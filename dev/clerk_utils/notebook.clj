@@ -128,7 +128,7 @@
   {:transform-fn clerk/mark-presented
    :render-fn
    '(fn [x]
-      [:pre x "² is equal to " (custom/square x) "."])})
+      [:pre x "² is equal to " (clerk-utils.custom/square x) "."])})
 
 ;; The code works:
 
@@ -147,7 +147,6 @@
 ;; ```clj
 ;; (ns clerk-utils.sci-extensions
 ;;   (:require [clerk-utils.custom]
-;;             [mentat.clerk-utils.sci]
 ;;             ["react" :as react]
 ;;             [sci.ctx-store]
 ;;             [sci.core :as sci]))
@@ -166,33 +165,20 @@
 ;;  sci/merge-opts
 ;;  {;; Use `:classes` to expose JavaScript classes that you'd like to use in your
 ;;   ;; viewer code. `Math/sin` etc will work with this entry:
-;;   :classes    {'Math  js/Math}
+;;   :classes {'Math js/Math}
+;;
+;;   ;; `:js-libs` allows you to make libraries from NPM like "react" available to
+;;   ;; `require` calls like this:
+;;   ;;
+;;   ;; ```clj
+;;   ;; (nextjournal.clerk/eval-cljs
+;;   ;;   '(require '["react" :as my-alias]))
+;;   ;; ```
+;;   :js-libs {"react" react}
 
 ;;   ;; Adding an entry to this map is equivalent to adding an entry like
 ;;   ;; `(:require [clerk-utils.custom])` to a Clojure namespace.
-;;   :namespaces {'clerk-utils.custom custom-namespace}
-
-;;   ;; Add aliases here for namespaces that you've included above. This adds an
-;;   ;; `:as` form to a namespace: `(:require [clerk-utils.custom :as custom])`
-;;   :aliases    {'custom 'clerk-utils.custom}})
-
-
-;; ;; ## JavaScript Libraries
-;; ;;
-;; ;;  `mentat.clerk-utils.sci` namespace's `register-js!` function allows you to
-;; ;;  make JavaScript libraries available to Clerk. The 2-arity version:
-
-;; #_
-;; (mentat.clerk-utils.sci/register-js! "react" react)
-
-;; ;; Would allow you to require the library in some notebook like so:
-
-;; #_
-;; (nextjournal.clerk/eval-cljs
-;;  '(require '["react" :as my-alias]))
-
-;; ;; Alternatively, provide a global alias directly with the 3-arity version:
-;; (mentat.clerk-utils.sci/register-js! "react" react 'react)
+;;   :namespaces {'clerk-utils.custom custom-namespace})
 ;; ```
 ;;
 ;; The final step is to build a custom ClojureScript bundle that includes this
@@ -204,12 +190,15 @@
 ;; Once you follow these steps, the [`show-sci` macro](#show-sci-macro) confirms
 ;; that the new code is available:
 
+(clerk/eval-cljs
+ '(require '["react" :as react]))
+
 (show-sci
  [:div
   [:h4 "JavaScript example:"]
   [:pre "The react version is " react/version "."]
   [:h4 "ClojureScript example:"]
-  [:pre "square works too: " (custom/square 10)]])
+  [:pre "square works too: " (clerk-utils.custom/square 10)]])
 
 ;; ### Clerk Plugins
 
@@ -456,7 +445,7 @@ clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha \"%s\"
  (let [text "Include any Reagent vector!"]
    [:pre text]))
 
-;; Other data structures are presented with `[v/inspect ...]`:
+;; Other data structures are presented with `[nextjournal.clerk.viewer/inspect ...]`:
 
 (show-sci
  {:key "value"})
@@ -464,7 +453,7 @@ clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha \"%s\"
 ;; To present a vector as code, manually wrap it in `[v/inspect ...]`:
 
 (show-sci
- [v/inspect
+ [nextjournal.clerk.viewer/inspect
   (let [text "Include any Reagent vector!"]
     [:pre text])])
 
@@ -497,24 +486,21 @@ clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha \"%s\"
  (defn square [x]
    (* x x))
 
- ;; Note that you must prepend the namespace onto the var annotated with
- ;; `::clerk/sync`:
- (let [!state clerk-utils.notebook/!state]
-   [:<>
-    [:div
-     [:input
-      {:type :range :min 0 :max 10 :step 1
-       :value @!state
-       :on-change
-       (fn [target]
-         (let [v (.. target -target -value)]
-           (reset! !state (js/parseInt v))))}]
-     " " @!state]
-    [v/inspect
-     (v/tex
-      (str @!state
-           "^2 = "
-           (square @!state)))]]))
+ [:<>
+  [:div
+   [:input
+    {:type :range :min 0 :max 10 :step 1
+     :value @!state
+     :on-change
+     (fn [target]
+       (let [v (.. target -target -value)]
+         (reset! !state (js/parseInt v))))}]
+   " " @!state]
+  [nextjournal.clerk.viewer/inspect
+   (nextjournal.clerk.viewer/tex
+    (str @!state
+         "^2 = "
+         (square @!state)))]])
 
 ;; These client-side changes will propagate to the server-side version of the
 ;; atom, and will be available at the REPL:
@@ -615,7 +601,7 @@ clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha \"%s\"
 
 ;; ## License
 
-;; Copyright © 2022 Sam Ritchie.
+;; Copyright © 2022-2023 Sam Ritchie.
 
 ;; Distributed under the [MIT
 ;; License](https://github.com/mentat-collective/clerk-utils/blob/main/LICENSE).
