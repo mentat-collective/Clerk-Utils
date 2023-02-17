@@ -78,7 +78,7 @@
           js/window
           [:show-cljs fn-name]
           (fn [x] (or x (reagent.core/atom {:loading? true}))))
-         (let [res @(j/get-in js/window [:show-cljs fn-name])]
+         (let [res @(applied-science.js-interop/get-in js/window [:show-cljs fn-name])]
            (if (:loading? res)
              [:div.show-cljs-loading
               {:style {:color "rgba(0,0,0,0.5)"}}
