@@ -378,7 +378,7 @@ clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha \"%s\"
 :name myusername/my-notebook-project
 ```" (docs/git-sha)))
 
-;; The README.md file in the generated project contains information on how to
+;; The `README.md` file in the generated project contains information on how to
 ;; extend and develop within the new project.
 
 ;; If you have an existing Clerk notebook project and are considering adding

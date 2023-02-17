@@ -4,6 +4,15 @@
 
 ## [0.4.0]
 
+- #21:
+
+  - Adds `bb test`, GitHub Action for tests and the `deps.edn` entry required to
+    make it work.
+
+  - Fixes a `j/` alias left over in `mentat.clerk-utils.show/loading-viewer`;
+    these aliases aren't available in the latest Clerk SCI environment, and need
+    to be fully expanded.
+
 - #19:
 
   - Upgrades to Clerk version `fad499407d979916d21b33cc7e46e73f7a485e37`

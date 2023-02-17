@@ -6,14 +6,14 @@
     "gh-pages": "gh-pages -d public/build --dotfiles true"
   },
   "dependencies": {
-    "@codemirror/autocomplete": "6.4.1",
+    "@codemirror/autocomplete": "6.4.2",
     "@codemirror/commands": "6.2.1",
     "@codemirror/lang-markdown": "6.0.0",
     "@codemirror/language": "6.6.0",
     "@codemirror/lint": "6.1.1",
     "@codemirror/search": "6.2.3",
     "@codemirror/state": "6.2.0",
-    "@codemirror/view": "6.9.0",
+    "@codemirror/view": "6.9.1",
     "@lezer/common": "1.0.2",
     "@lezer/generator": "1.2.2",
     "@lezer/highlight": "1.1.3",

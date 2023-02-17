@@ -51,6 +51,10 @@
   {:doc "Release the library to Clojars."
    :task (shell "clojure -T:build publish")}
 
+  test
+  {:doc "Run Clojure tests."
+   :task (shell "clojure -X:test")}
+
   lint
   {:doc "Lint all code directories with clj-kondo."
    :task (clj-kondo/print!
