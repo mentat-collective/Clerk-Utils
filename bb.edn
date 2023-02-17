@@ -16,7 +16,7 @@
                 (System/exit 1))))))
 
   clerk-watch
-  {:doc "Start a shadow-cljs watch process that generates this project's custom JS."
+  {:doc "Runs `user/serve!` with a watcher process generating custom JS."
    :task (X "clojure -X:nextjournal/clerk user/serve!")}
 
   build-static
@@ -42,8 +42,7 @@
        (shell "npm run gh-pages"))}
 
   publish-local
-  {:doc "Generate a fresh static build in the `public` folder and start a local
-  webserver."
+  {:doc "Generate a fresh static build and start a local webserver."
    :task
    (do (run 'build-static)
        (run 'serve))}
@@ -52,7 +51,11 @@
   {:doc "Release the library to Clojars."
    :task (shell "clojure -T:build publish")}
 
+  test
+  {:doc "Run Clojure tests."
+   :task (shell "clojure -X:test")}
+
   lint
-  {:doc "Lint the src and dev directories with clj-kondo."
+  {:doc "Lint all code directories with clj-kondo."
    :task (clj-kondo/print!
           (clj-kondo/run! {:lint ["src" "dev"]}))}}}

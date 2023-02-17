@@ -2,6 +2,30 @@
 
 ## [unreleased]
 
+## [0.4.0]
+
+- #21:
+
+  - Adds `bb test`, GitHub Action for tests and the `deps.edn` entry required to
+    make it work.
+
+  - Fixes a `j/` alias left over in `mentat.clerk-utils.show/loading-viewer`;
+    these aliases aren't available in the latest Clerk SCI environment, and need
+    to be fully expanded.
+
+- #19:
+
+  - Upgrades to Clerk version `fad499407d979916d21b33cc7e46e73f7a485e37`
+
+  - Modifies the `clerk-utils/custom` template and project to use fully
+    qualified vars inside of viewers.
+
+  - Removes `mentat.clerk-utils.sci`, as `register-js!` was superceded by the
+    new `:js-libs` option provided by SCI.
+
+- #18 adds a `provided` dependency on `clerk` to the published jar, so that
+  cljdoc's analysis will succeed.
+
 - #16:
 
   - Fix broken deps reference in `clerk-utils/custom` template instructions

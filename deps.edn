@@ -13,12 +13,20 @@
   {:extra-paths ["dev"]
    :extra-deps
    {io.github.nextjournal/clerk
-    {:git/sha "4180ed31c2864687a770f6d4f625303bd8e75437"}
+    {:git/sha "fad499407d979916d21b33cc7e46e73f7a485e37"}
     io.github.nextjournal/clerk.render
     {:git/url "https://github.com/nextjournal/clerk"
-     :git/sha "4180ed31c2864687a770f6d4f625303bd8e75437"
+     :git/sha "fad499407d979916d21b33cc7e46e73f7a485e37"
      :deps/root "render"}}
    :exec-fn user/build!}
+
+  :test
+  {:extra-paths ["test"]
+   :extra-deps
+   {io.github.cognitect-labs/test-runner
+    {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
+   :main-opts ["-m" "cognitect.test-runner"]
+   :exec-fn cognitect.test-runner.api/test}
 
   :build
   {:deps {io.github.clojure/tools.build {:git/tag "v0.8.2" :git/sha "ba1a2bf"}

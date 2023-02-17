@@ -2,8 +2,7 @@
   "Show utilities for Clerk."
   (:require [applied-science.js-interop :as j]
             [clojure.walk :as walk]
-            [nextjournal.clerk #?(:clj :as :cljs :as-alias) clerk]
-            #?(:cljs [nextjournal.clerk.render]))
+            [nextjournal.clerk #?(:clj :as :cljs :as-alias) clerk])
   #?(:cljs
      (:require-macros mentat.clerk-utils.show)))
 
@@ -12,8 +11,9 @@
   the final form. If the final form evaluates to a vector, the vector is
   interpreted as a Reagent component.
 
-  Else, the form is presented with `[v/inspect form]`. (To present a vector,
-  manually wrap the final form in `[v/inspect ,,,]`.)
+  Else, the form is presented with `[nextjournal.clerk.viewer/inspect
+  form]`. (To present a vector, manually wrap the final form in
+  `[nextjournal.clerk.viewer/inspect ,,,]`.)
 
   Works in both `clj` and `cljs` contexts; in `cljs` this is equivalent to
   `clojure.core/comment`."
@@ -24,7 +24,7 @@
         :render-fn
         '(fn [_#]
            (let [result# (do ~@exprs)]
-             (v/html
+             (nextjournal.clerk.viewer/html
               (if (vector? result#)
                 result#
                 [nextjournal.clerk.render/inspect result#]))))}
@@ -78,7 +78,7 @@
           js/window
           [:show-cljs fn-name]
           (fn [x] (or x (reagent.core/atom {:loading? true}))))
-         (let [res @(j/get-in js/window [:show-cljs fn-name])]
+         (let [res @(applied-science.js-interop/get-in js/window [:show-cljs fn-name])]
            (if (:loading? res)
              [:div.show-cljs-loading
               {:style {:color "rgba(0,0,0,0.5)"}}
@@ -103,7 +103,7 @@
   Reagent component. (To present a vector, prepend the form with `^:inspect`
   metadata.)
 
-  Else, the form is presented with `[v/inspect form]`.
+  Else, the form is presented with `[nextjournal.clerk.viewer/inspect form]`.
 
   ## How it Works
 
