@@ -103,7 +103,7 @@ projects like it.
 
 ## License
 
-Copyright © 2022 Sam Ritchie.
+Copyright © 2022-2023 Sam Ritchie.
 
 Distributed under the [MIT License](LICENSE). See [LICENSE](LICENSE).
 

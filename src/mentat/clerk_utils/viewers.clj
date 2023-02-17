@@ -1,6 +1,5 @@
-(ns mentat.clerk-utils.pattern
-  (:require [clojure.string :as-alias s]
-            [clojure.set :as cs]))
+(ns mentat.clerk-utils.viewers
+  (:require [clojure.string :as-alias s]))
 
 (defn map-kv
   "Returns a map of identical type and key set to `m`, with each value `v`
