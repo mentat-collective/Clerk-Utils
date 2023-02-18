@@ -4,6 +4,10 @@
 
 ## [0.4.0]
 
+- #17 adds `mentat.clerk-utils.q`, similar to `quote` or `'`, for writing
+  viewers with alias resolution and splicing. The `clj-kondo` config has an
+  accompanying hook that handles linting of this form.
+
 - #21:
 
   - Adds `bb test`, GitHub Action for tests and the `deps.edn` entry required to

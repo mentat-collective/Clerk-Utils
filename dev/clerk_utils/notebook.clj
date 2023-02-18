@@ -6,6 +6,7 @@
   (:require [mentat.clerk-utils :as u]
             [mentat.clerk-utils.docs :as docs]
             [mentat.clerk-utils.show :refer [show-sci]]
+            [mentat.clerk-utils.viewers]
             [nextjournal.clerk :as clerk]))
 
 ;; # Clerk-Utils
@@ -526,6 +527,54 @@ clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha \"%s\"
 ;; and ClojureScript compilers are able to read. This more complex use case is
 ;; documented in the [`show-cljs` documentation
 ;; notebook](dev/clerk_utils/show.html).
+
+;; ## `q` Macro for Viewers
+;;
+;; The latest versions of Clerk require you to fully resolve the namespace of
+;; any function you use inside the `:render-fn` of [your custom Clerk
+;; viewer](https://book.clerk.vision/#writing-viewers).
+;;
+;; The `mentat.clerk-utils.viewers/q` macro is similar to `clojure.core/quote`,
+;; but
+;;
+;; - expands any symbol namespaces that are present as aliases
+;; - allows for splicing and unquote splicing
+;;
+;; For example, if we create an alias for `nextjournal.clerk.viewer`:
+
+(require '[nextjournal.clerk.viewer :as-alias v])
+
+;; then `q` will expand any `v/<symbol>` calls, and leave other prefixes (or
+;; non-namespaced symbols) alone:
+
+(mentat.clerk-utils.viewers/q
+ (fn [x]
+   [v/inspect #{prefix/x y}]))
+
+;; `q` also allows you to splice in values from the `clj` environment:
+
+(let [defaults {:key "value"}
+      entries  [1 2 3]]
+  (mentat.clerk-utils.viewers/q
+   (fn [x]
+     [myns/SomeComponent
+      ~defaults
+      [~@entries x]])))
+
+;; These features allow you to build up viewers in pieces, like this:
+
+(def inner-call
+  (mentat.clerk-utils.viewers/q
+   [myns/InnerComponent
+    {:k "v"}
+    "inner call"]))
+
+(def render-fn
+  (mentat.clerk-utils.viewers/q
+   (fn [x]
+     [myns/OuterComponent
+      {:other "props"}
+      ~inner-call])))
 
 ;; ## CSS Functions
 

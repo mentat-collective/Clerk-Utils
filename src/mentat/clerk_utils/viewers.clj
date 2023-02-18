@@ -1,4 +1,5 @@
 (ns mentat.clerk-utils.viewers
+  "Functions useful for writing custom Clerk viewers."
   (:require [clojure.string :as-alias s]))
 
 (defn map-kv
@@ -34,7 +35,7 @@
 
 (defn unquoted-form
   "Given a `form` that responds `true` to [[unquote?]] or [[unquote-splice?]],
-  returns the form from that form."
+  returns the unquoted body."
   [form]
   (second form))
 
@@ -67,16 +68,36 @@
       acc
       (conj acc pending))))
 
-(defn compile-sym [aliases form]
+(defn compile-sym
+  "Given a map `aliases` of `<symbol> => <namespace object>` and a symbol `sym`,
+  returns `sym` with its namespace expanded if that namespace is present in
+  `aliases`, `sym` otherwise.
+
+  For example:
+
+  ```clj
+  (require '[clojure.core :as c])
+  (compile-sym (ns-aliases *ns*) 'c/cake)
+  ;; => 'clojure.core/cake
+  ```"
+  [aliases sym]
   (list
    'quote
-   (if-let [ns (namespace form)]
+   (if-let [ns (namespace sym)]
      (if-let [full-ns (aliases (symbol ns))]
-       (symbol (str full-ns) (name form))
-       form)
-     form)))
+       (symbol (str full-ns) (name sym))
+       sym)
+     sym)))
 
 (defn compile-form
+  "Given a map `aliases` of `<symbol> => <namespace object>` and a Clojure
+  expression tree `skel`, returns `skel` with
+
+  - any splices or unquote-splices resolved from the environment
+  - any symbol namespaced by an alias substituted for a symbol with namespace
+    expanded.
+
+  Used by [[q]]."
   [aliases skel]
   (letfn [(compile-sequential [xs]
             (let [acc (splice-reduce compile xs)]
@@ -111,6 +132,21 @@
                   :else form))]
     (compile skel)))
 
-(defmacro q [form]
+(defmacro q
+  "[[q]] is similar to Clojure's `unquote` facility, except that
+
+  - symbols are not automatically prefixed by namespace,
+  - splices and unquote splices are respected, and
+  - any symbol namespaced by an alias will have its namespace expanded.
+
+  For example:
+
+  ```clojure
+  (require '[clojure.core :as c])
+  (let [x 10]
+    (q (+ ~x c/y z ~@[4 5])))
+  ;;=> (+ 10 clojure.core/y z 4 5)
+  ```"
+  [form]
   (let [alias-m (ns-aliases *ns*)]
     (compile-form alias-m form)))
