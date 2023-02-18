@@ -1,7 +1,7 @@
 {:description "TODO replace me with a description of your project!"
  :clerk-port 7777
  :clerk-sha "fad499407d979916d21b33cc7e46e73f7a485e37"
- :clerk-utils-sha "718c6fa3064909b30a4668e89f3b18fe851f3d28"
+ :clerk-utils-sha "c9523f2879cd28a0801b918ada1c27ffc49b00e2"
  :shadow-port 8765
  :shadow-version "2.20.14"
  :clj-version "1.11.1"
