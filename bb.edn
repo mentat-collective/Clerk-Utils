@@ -58,4 +58,4 @@
   lint
   {:doc "Lint all code directories with clj-kondo."
    :task (clj-kondo/print!
-          (clj-kondo/run! {:lint ["src" "dev"]}))}}}
+          (clj-kondo/run! {:lint ["src" "dev" "test"]}))}}}
