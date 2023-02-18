@@ -2,6 +2,9 @@
 
 ## [unreleased]
 
+- #23 renames `.clj` and `.cljs` files in the templates to `.tmpl`, to prevent
+  cljdoc and other tooling from trying to process them as Clojure files.
+
 ## [0.4.0]
 
 - #17 adds `mentat.clerk-utils.viewers/q`, similar to `quote` or `'`, for
