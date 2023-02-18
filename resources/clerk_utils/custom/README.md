@@ -15,7 +15,7 @@ clojure -Ttools install io.github.seancorfield/deps-new '{:git/tag "v0.4.13"}' :
 Then create a project using the `clerk-utils/custom` template:
 
 ```
-clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha "718c6fa3064909b30a4668e89f3b18fe851f3d28"}}}' \
+clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha "c9523f2879cd28a0801b918ada1c27ffc49b00e2"}}}' \
 -Tnew create \
 :template clerk-utils/custom \
 :name myusername/my-notebook-project
