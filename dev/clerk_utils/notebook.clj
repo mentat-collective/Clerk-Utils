@@ -629,11 +629,18 @@ clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha \"%s\"
 
 ;; ## Who is using clerk-utils?
 
-;; The following documentation notebooks include examples of the `cljs` macro:
+;; The following documentation notebooks include examples of
+;; the [`show-sci`](#show-sci-macro) macro:
 
 ;; - [JSXGraph.cljs](https://jsxgraph.mentat.org)
 ;; - [MathLive.cljs](https://mathlive.mentat.org)
 ;; - [MathBox.cljs](https://mathbox.mentat.org)
+;; - [Mafs.cljs](https://mafs.mentat.org)
+;; - [Leva.cljs](https://leva.mentat.org)
+;;
+;; Many of the [MathBox.org
+;; examples](https://mathbox.mentat.org/dev/mathbox/examples/index.html) use
+;; [`show-cljs`](#show-cljs-macro).
 
 ;; ## Thanks and Support
 
