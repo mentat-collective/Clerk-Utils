@@ -2,6 +2,9 @@
 
 ## [unreleased]
 
+- #24 renames the clj-kondo hooks to have extension `.clj_kondo`, for the same
+  reason as #23.
+
 - #23 renames `.clj` and `.cljs` files in the templates to `.tmpl`, to prevent
   cljdoc and other tooling from trying to process them as Clojure files.
 
