@@ -67,8 +67,10 @@ The following documentation notebooks include examples of the `show-sci` macro:
 - [JSXGraph.cljs](https://jsxgraph.mentat.org)
 - [MathLive.cljs](https://mathlive.mentat.org)
 - [MathBox.cljs](https://mathbox.mentat.org)
-- [emmy-viewers](https://emmy-viewers.mentat.org)
-- [clerk-utils](https://clerk-utils.mentat.org)
+- [Mafs.cljs](https://mafs.mentat.org)
+- [Leva.cljs](https://leva.mentat.org)
+- [Emmy-viewers](https://emmy-viewers.mentat.org)
+- [Clerk-Utils](https://clerk-utils.mentat.org)
 
 ## Interactive Documentation via Clerk
 
