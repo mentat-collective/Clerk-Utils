@@ -472,6 +472,20 @@ clojure -Sdeps '{:deps {io.github.mentat-collective/clerk-utils {:git/sha \"%s\"
 (show-sci
  [:pre (exclaim "Still here")])
 
+;; `show-sci` makes use of the [`q` macro](#q-macro-for-viewers) internally, so
+;; you can do thing like splice values in from your Clojure environment:
+
+(let [defaults {:key "value"}
+      entries  [1 2 3]]
+  (show-sci
+   [nextjournal.clerk.viewer/inspect
+    ;; The form passed to `inspect` uses values spliced in from the CLJ-side
+    ;; `let` form above.
+    [~defaults
+     [~@entries 4]]]))
+
+;; See the [`q` macro section](#q-macro-for-viewers) for more detail.
+
 ;; ### Client / Server Example
 ;;
 ;; Annotate a `var` definition bound to an atom with `^{::clerk/sync true}` to

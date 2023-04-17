@@ -2,6 +2,15 @@
 
 ## [unreleased]
 
+## [0.5.0]
+
+- #28:
+
+  - Removes the `babashka` dependency from `mentat.clerk-utils.build`
+
+  - `mentat.clerk-utils.show/q` now applies to the forms passed to `show-sci`,
+    allowing for value-splicing, namespace resolution etc inside of `show-sci`.
+
 - #24 renames the clj-kondo hooks to have extension `.clj_kondo`, for the same
   reason as #23.
 

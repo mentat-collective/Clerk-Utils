@@ -1,13 +1,14 @@
 (ns mentat.clerk-utils.build
   "Versions of `nextjournal.clerk/{build!,serve!,halt!} that support custom CLJS
   compilation.`"
-  (:require [babashka.fs :as fs]
+  (:require [clojure.java.io :as io]
             [mentat.clerk-utils.docs :refer [git-sha]]
             [mentat.clerk-utils.build.shadow :as shadow]
             [nextjournal.clerk :as clerk]
             [nextjournal.clerk.config :as config]
             [nextjournal.clerk.view]
-            [nextjournal.clerk.viewer :as cv]))
+            [nextjournal.clerk.viewer :as cv])
+  (:import (java.nio.file Files)))
 
 ;; ## Viewer JS Utilities
 
@@ -125,7 +126,8 @@
       (if-not (seq cljs-namespaces)
         @!build
         (let [js-path (shadow/release! cljs-namespaces)
-              cas     (->> (fs/read-all-bytes js-path)
+              cas     (->> (.toPath (io/file js-path))
+                           (Files/readAllBytes)
                            (cv/store+get-cas-url!
                             {:out-path out-path
                              :ext "js"}))]

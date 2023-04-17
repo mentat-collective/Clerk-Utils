@@ -2,6 +2,7 @@
   "Show utilities for Clerk."
   (:require [applied-science.js-interop :as j]
             [clojure.walk :as walk]
+            #?(:clj [mentat.clerk-utils.viewers :refer [q]])
             [nextjournal.clerk #?(:clj :as :cljs :as-alias) clerk])
   #?(:cljs
      (:require-macros mentat.clerk-utils.show)))
@@ -17,18 +18,21 @@
 
   Works in both `clj` and `cljs` contexts; in `cljs` this is equivalent to
   `clojure.core/comment`."
-  [& exprs]
+  [& #?(:clj exprs :cljs _exprs)]
   (when-not (:ns &env)
-    `(clerk/with-viewer
-       {:transform-fn clerk/mark-presented
-        :render-fn
-        '(fn [_#]
-           (let [result# (do ~@exprs)]
-             (nextjournal.clerk.viewer/html
-              (if (vector? result#)
-                result#
-                [nextjournal.clerk.render/inspect result#]))))}
-       {})))
+    #?(:clj
+       `(clerk/with-viewer
+          {:transform-fn clerk/mark-presented
+           :render-fn
+           (q
+            (fn [_#]
+              (let [result# (do ~@exprs)]
+                (nextjournal.clerk.viewer/html
+                 (if (vector? result#)
+                   result#
+                   [nextjournal.clerk.render/inspect result#])))))}
+          {})
+       :cljs nil)))
 
 ;; ## show-cljs macro
 ;;

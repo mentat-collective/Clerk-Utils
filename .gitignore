@@ -16,6 +16,7 @@ pom.xml.asc
 .lein-*
 .nrepl-*
 .DS_Store
+.cljs_node_repl
 
 .hgignore
 .hg/
