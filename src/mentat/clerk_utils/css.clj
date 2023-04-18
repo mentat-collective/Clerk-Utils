@@ -6,9 +6,9 @@
 
 ;; ## CSS Customization
 
-(def ^{:doc "Stateful reference to a sequence of custom CSS sources to be
-  included in Clerk's page when it loads."}
-  custom-css
+(def custom-css
+  "Stateful reference to a sequence of custom CSS sources to be
+  included in Clerk's page when it loads."
   (atom []))
 
 (alter-var-root

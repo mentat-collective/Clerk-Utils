@@ -1,6 +1,7 @@
 (ns mentat.clerk-utils.build.shadow
   "Utilities for generating custom Clerk viewer CLJS builds via `shadow-cljs`."
-  (:require [clojure.java.shell :refer [sh]]
+  (:require [clojure.string]
+            [clojure.java.shell :refer [sh]]
             [shadow.cljs.devtools.config :as shadow.config]
             [shadow.cljs.devtools.server :as shadow.server]
             [shadow.cljs.devtools.server.runtime :as runtime]
@@ -8,24 +9,33 @@
             [shadow.cljs.devtools.server.npm-deps :as npm-deps]
             [shadow.cljs.devtools.api :as shadow.api]))
 
-(def ^{:doc "Shadow version of the currently-loaded `shadow-cljs` dependency."}
-  shadow-version
+(def ^:private windows?
+  (clojure.string/starts-with?
+   (System/getProperty "os.name")
+   "Windows"))
+
+(def npm-cmd
+  "System-specific NPM command, tuned for Windows or non-Windows."
+  (if windows? "npm.cmd" "npm"))
+
+(def shadow-version
+  "Shadow version of the currently-loaded `shadow-cljs` dependency."
   (shadow.util/find-version))
 
-(def ^{:doc "Schema for the NPM dependency for `shadow-cljs` associated with the
-  currently loaded `shadow-cljs` JVM library."}
-  shadow-npm-dep
+(def shadow-npm-dep
+  "Schema for the NPM dependency for `shadow-cljs` associated with the
+  currently loaded `shadow-cljs` JVM library."
   {:id "shadow-cljs"
    :version shadow-version})
 
 (def ^:no-doc build-id ::clerk)
 
-(def ^{:doc "Output directory for our controlled `shadow-cljs` build."}
-  output-dir
+(def output-dir
+  "Output directory for our controlled `shadow-cljs` build."
   ".clerk/shadow-cljs")
 
-(def ^{:doc "Location of the generated JS code."}
-  js-path
+(def js-path
+  "Location of the generated JS code."
   (str output-dir "/main.js"))
 
 (defn clerk-build-config
@@ -77,7 +87,7 @@
       (println "Running npm install...")
       (println
        (:out
-        (sh "npm" "install"))))
+        (sh npm-cmd "install"))))
 
     (npm-deps/install-deps {} deps)))
 

@@ -4,6 +4,9 @@
 
 ## [0.5.0]
 
+- #30 adds better support for Windows by invoking `npm` using `npm.bat` when
+  appropriate.
+
 - #29 converts `mentat.clerk-utils` to `cljc`. The CLJS side doesn't do
   anything, but this allows the require and macro calls to live inside `cljc`
   files.
