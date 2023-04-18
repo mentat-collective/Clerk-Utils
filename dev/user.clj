@@ -28,8 +28,8 @@
    (b/serve!
     (merge defaults opts))))
 
-(def ^{:doc "Alias for [[mentat.clerk-utils.build/halt!]]."}
-  halt!
+(def halt!
+  "Alias for [[mentat.clerk-utils.build/halt!]]."
   b/halt!)
 
 (defn build!
