@@ -4,9 +4,9 @@
 
 ## [0.5.0]
 
-- #:
-
-  - `mentat.clerk-utils` is now a cljc file.
+- #29 converts `mentat.clerk-utils` to `cljc`. The CLJS side doesn't do
+  anything, but this allows the require and macro calls to live inside `cljc`
+  files.
 
 - #28:
 
