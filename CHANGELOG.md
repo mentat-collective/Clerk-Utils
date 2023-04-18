@@ -4,6 +4,10 @@
 
 ## [0.5.0]
 
+- #29 converts `mentat.clerk-utils` to `cljc`. The CLJS side doesn't do
+  anything, but this allows the require and macro calls to live inside `cljc`
+  files.
+
 - #28:
 
   - Removes the `babashka` dependency from `mentat.clerk-utils.build`
