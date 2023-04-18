@@ -4,6 +4,10 @@
 
 ## [0.5.0]
 
+- #:
+
+  - `mentat.clerk-utils` is now a cljc file.
+
 - #28:
 
   - Removes the `babashka` dependency from `mentat.clerk-utils.build`
