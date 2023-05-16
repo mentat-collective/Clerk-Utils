@@ -1,7 +1,7 @@
 {:paths ["src" "resources"]
  :deps
  {applied-science/js-interop {:mvn/version "0.3.3"}
-  thheller/shadow-cljs       {:mvn/version "2.20.14"}}
+  thheller/shadow-cljs       {:mvn/version "2.23.1"}}
 
  :aliases
  {:dev
@@ -13,10 +13,10 @@
   {:extra-paths ["dev"]
    :extra-deps
    {io.github.nextjournal/clerk
-    {:git/sha "fad499407d979916d21b33cc7e46e73f7a485e37"}
+    {:git/sha "5e875e256a28a6deabf27bd6fc20f44cee5dad20"}
     io.github.nextjournal/clerk.render
     {:git/url "https://github.com/nextjournal/clerk"
-     :git/sha "fad499407d979916d21b33cc7e46e73f7a485e37"
+     :git/sha "5e875e256a28a6deabf27bd6fc20f44cee5dad20"
      :deps/root "render"}}
    :exec-fn user/build!}
 
