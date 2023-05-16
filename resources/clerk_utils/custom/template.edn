@@ -1,7 +1,7 @@
 {:description "TODO replace me with a description of your project!"
  :clerk-port 7777
  :clerk-sha "5e875e256a28a6deabf27bd6fc20f44cee5dad20"
- :clerk-utils-sha "c9523f2879cd28a0801b918ada1c27ffc49b00e2"
+ :clerk-utils-sha "40e7c7bd358c95d1cc96d76eb6ae5099868e500f"
  :clj-version "1.11.1"
  :cljs-version "1.11.60"
  :http-server-port 8080
