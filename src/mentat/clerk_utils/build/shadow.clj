@@ -45,7 +45,7 @@
   The resulting build will include all supplied namespaces, plus Clerk's
   `nextjournal.clerk.static-app` namespace.`"
   [cljs-namespaces]
-  (let [entries (into ['nextjournal.clerk.static-app]
+  (let [entries (into ['nextjournal.clerk.sci-env]
                       cljs-namespaces)]
     {:build-id build-id
      :target :esm
