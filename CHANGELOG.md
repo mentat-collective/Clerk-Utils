@@ -2,6 +2,10 @@
 
 ## [unreleased]
 
+- #33 modifies `mentat.clerk-utils.build.shadow/install-npm-deps!` to skip
+  running an extra npm commnand if there are no uninstalled dependencies in any
+  `deps.cljs` files.
+
 ## [0.5.1]
 
 - #32 modifies `mentat.clerk-utils.build.shadow` to include

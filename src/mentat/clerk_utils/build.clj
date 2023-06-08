@@ -139,25 +139,3 @@
       (finally
         (when cname
           (spit (str out-path "/CNAME") cname))))))
-
-(require '[nextjournal.clerk.analyzer :as analyzer])
-
-(defn freeze!
-  [{:keys [cljs-namespaces]}]
-  (when (seq cljs-namespaces)
-    (let [js-path (shadow/release! cljs-namespaces)
-          data    (->> (.toPath (io/file js-path))
-                       (Files/readAllBytes))
-          tag     (analyzer/sha2-base58 data)]
-      tag)))
-
-(comment
-  (let [data (Files/readAllBytes(.toPath (io/file "./template/pom.xml")))
-        tag  (analyzer/sha2-base58 data)]
-    ((requiring-resolve 'nextjournal.cas-client/cas-put)
-     {:path "template"
-      :auth-token "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"
-      #_(System/getenv "GITHUB_TOKEN")
-      :namespace "nextjournal"
-      :tag tag})
-    ))
