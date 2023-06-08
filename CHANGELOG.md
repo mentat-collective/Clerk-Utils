@@ -2,6 +2,22 @@
 
 ## [unreleased]
 
+## [0.6.0]
+
+- #34:
+
+  - adds `mentat.clerk-utils.build/release->cas!` for sending compiled JS
+    bundles up to Garden.
+
+  -  adds `:custom-js` options to `mentat.clerk-utils.build/{build!, serve!}`
+     for specifying a different bundle than Clerk's built-in bundle (from
+     [Emmy-Viewers](https://github.com/mentat-collective/emmy-viewers), for
+     example)
+
+- #33 modifies `mentat.clerk-utils.build.shadow/install-npm-deps!` to skip
+  running an extra npm command if there are no uninstalled dependencies in any
+  `deps.cljs` files.
+
 ## [0.5.1]
 
 - #32 modifies `mentat.clerk-utils.build.shadow` to include

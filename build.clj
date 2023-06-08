@@ -18,7 +18,7 @@
 ;; ## Variables
 
 (def lib 'org.mentat/clerk-utils)
-(def version "0.5.1")
+(def version "0.6.0")
 (def pom-deps
   {'io.github.nextjournal/clerk
    {:mvn/version "0.12.707"
