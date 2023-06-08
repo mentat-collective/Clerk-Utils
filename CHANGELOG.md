@@ -2,7 +2,9 @@
 
 ## [unreleased]
 
-- Upgrade Clerk in the project and the template to
+- #32
+
+- #31 upgrades Clerk in the project and the template to
   `"5e875e256a28a6deabf27bd6fc20f44cee5dad20"`, past the sha that removed
   `nextjournal.clerk.static-app` in favor of `nextjournal.clerk.sci-env`.
 

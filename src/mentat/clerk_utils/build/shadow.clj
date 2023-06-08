@@ -2,6 +2,7 @@
   "Utilities for generating custom Clerk viewer CLJS builds via `shadow-cljs`."
   (:require [clojure.string]
             [clojure.java.shell :refer [sh]]
+            [clojure.java.io :as io]
             [shadow.cljs.devtools.config :as shadow.config]
             [shadow.cljs.devtools.server :as shadow.server]
             [shadow.cljs.devtools.server.runtime :as runtime]
@@ -38,6 +39,14 @@
   "Location of the generated JS code."
   (str output-dir "/main.js"))
 
+(defn clerk-entries
+  "Returns the sequence of (symbols representing) cljs namespaces required by the
+  loaded version of Clerk for interactive development and static publication."
+  []
+  (cond-> ['nextjournal.clerk.sci-env]
+    (io/resource "nextjournal/clerk/static_app.cljs")
+    (conj 'nextjournal.clerk.static-app)))
+
 (defn clerk-build-config
   "Given sequence `cljs-namespaces` of symbols naming ClojureScript namspaces,
   returns a `:builds` entry for a `shadow-cljs` build of Clerk's viewer JS.
@@ -45,8 +54,7 @@
   The resulting build will include all supplied namespaces, plus Clerk's
   `nextjournal.clerk.static-app` namespace.`"
   [cljs-namespaces]
-  (let [entries (into ['nextjournal.clerk.sci-env]
-                      cljs-namespaces)]
+  (let [entries (into (clerk-entries) cljs-namespaces)]
     {:build-id build-id
      :target :esm
      :runtime :browser
