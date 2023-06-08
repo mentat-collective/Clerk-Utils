@@ -2,7 +2,11 @@
 
 ## [unreleased]
 
-- #32
+## [0.5.1]
+
+- #32 modifies `mentat.clerk-utils.build.shadow` to include
+  `nextjournal.clerk.static-app` only when available, adding backwards
+  compatibility in for previous Clerk versions.
 
 - #31 upgrades Clerk in the project and the template to
   `"5e875e256a28a6deabf27bd6fc20f44cee5dad20"`, past the sha that removed
