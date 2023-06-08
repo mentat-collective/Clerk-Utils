@@ -97,7 +97,8 @@
        (:out
         (sh npm-cmd "install"))))
 
-    (npm-deps/install-deps {} deps)))
+    (when (seq deps)
+      (npm-deps/install-deps {} deps))))
 
 (defn stop-watch!
   "Shuts down the `shadow-cljs` server (if running) and stops the build watcher
