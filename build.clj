@@ -21,7 +21,7 @@
 (def version "0.6.0")
 (def pom-deps
   {'io.github.nextjournal/clerk
-   {:mvn/version "0.12.707"
+   {:mvn/version "0.14.919"
     :mvn/scope "provided"}})
 
 (defn- ->version
